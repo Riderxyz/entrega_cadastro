@@ -66,6 +66,8 @@ export class AuthService {
         this.router.navigateByUrl('dashboard');
         this.toastSrv.notify('success', 'Login realizado com sucesso', '', 3000);
       } else {
+        debugger;
+        this.router.navigateByUrl('/login');
         this.isLoggedIn = false;
         this.clearUserData();
       }

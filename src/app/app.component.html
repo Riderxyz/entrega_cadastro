@@ -1,2 +1,15 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<div class="app-container">
+  <aside
+  [class.expanding]="isMenuOpen"
+  >
+<app-menu></app-menu>
+</aside>
+  <div class="main-body">
+    <div class="overlay" *ngIf="isMenuOpen" (click)="isMenuOpen = false"></div>
+    <div @expandOnEnter *ngIf="AuthSrv.isLoggedIn">
+      <app-header></app-header>
+    </div>
+    <router-outlet></router-outlet>
+    <app-footer> </app-footer>
+  </div>
+</div>

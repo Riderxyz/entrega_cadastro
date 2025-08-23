@@ -1,13 +1,21 @@
 <p-toolbar>
-  <div class="p-toolbar-group-left">
-    <!-- Ícone de menu -->
-    <i class="fa fa-bars menu-icon" (click)="toggleSideMenu()"></i>
-    <!-- Título da aplicação -->
-    <span class="app-title">WKTransportadora</span>
+  <div class="p-toolbar-group-left flex gap-4">
+    <p-button
+      icon="fa-solid fa-bars"
+      [text]="true"
+      [severity]="'secondary'"
+      (click)="toggleSideMenu()"
+    ></p-button>
+    <span class="app-title">WK Transportadora</span>
   </div>
 
   <div class="p-toolbar-group-right">
     <!-- Avatar -->
-    <p-avatar [image]="avatarUrl" [label]="avatarName"></p-avatar>
+    <div class="flex gap-2">
+      <p-avatar [image]="avatarUrl" size="large"></p-avatar>
+      <h4>
+        {{ avatarName }}
+      </h4>
+    </div>
   </div>
 </p-toolbar>

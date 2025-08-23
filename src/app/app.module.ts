@@ -25,6 +25,7 @@ import { registerLocaleData } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { MenuComponent } from "./components/menu/menu.component";
 
 registerLocaleData(ptBr);
 @NgModule({
@@ -34,23 +35,22 @@ registerLocaleData(ptBr);
     AppRoutingModule,
     BrowserAnimationsModule,
     HeaderComponent,
-FooterComponent,
+    FooterComponent,
+    MenuComponent,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideAnalytics(() => getAnalytics()),
-    provideFirestore(() =>
-      initializeFirestore(getApp(), {
+    provideFirestore(() => initializeFirestore(getApp(), {
         localCache: persistentLocalCache(),
-      })
-    ),
-
+    })),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000',
+        enabled: !isDevMode(),
+        // Register the ServiceWorker as soon as the application is stable
+        // or after 30 seconds (whichever comes first).
+        registrationStrategy: 'registerWhenStable:30000',
     }),
-  ],
+    MenuComponent
+],
   providers: [
     provideHttpClient(),
     { provide: LOCALE_ID, useValue: 'pt-BR' },
