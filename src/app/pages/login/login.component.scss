@@ -1,0 +1,426 @@
+// Variáveis para cores e valores reutilizáveis
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$white: #fff;
+$gray-50: #f9fafb;
+$gray-100: #f7fafc;
+$gray-200: #edf2f7;
+$gray-300: #e2e8f0;
+$gray-400: #cbd5e0;
+$gray-500: #a0aec0;
+$gray-600: #718096;
+$gray-700: #4a5568;
+$gray-800: #2d3748;
+$gray-900: #1a202c;
+
+$primary-color: #667eea;
+$primary-hover: #5a67d8;
+
+$border-radius: 12px;
+$transition: all 0.3s ease;
+
+// Mixins para reutilização de estilos
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin floating-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@mixin shimmer-effect {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+// Estilos principais
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.page-container {
+  background: $primary-gradient;
+  @include flex-center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+// Animated background elements
+.bg-shape {
+  position: absolute;
+  opacity: 0.1;
+  @include floating-animation;
+
+  &:nth-child(1) {
+    top: 10%;
+    left: 10%;
+    width: 100px;
+    height: 100px;
+    background: $white;
+    border-radius: 50%;
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    top: 60%;
+    right: 10%;
+    width: 150px;
+    height: 150px;
+    background: $white;
+    transform: rotate(45deg);
+    animation-delay: 2s;
+  }
+
+  &:nth-child(3) {
+    bottom: 20%;
+    left: 20%;
+    width: 80px;
+    height: 80px;
+    background: $white;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    animation-delay: 4s;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 450px;
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin: auto;
+  max-height: 90vh; // Limita a altura máxima
+  overflow-y: auto; // Scroll interno se necessário
+  .company-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+    .logo-icon {
+      width: 64px;
+      height: 64px;
+      background: $primary-gradient;
+      border-radius: 16px;
+      @include flex-center;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: "🚛";
+        font-size: 28px;
+      }
+    }
+    .company-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: $gray-800;
+      margin-bottom: 8px;
+    }
+
+    .company-tagline {
+      color: $gray-600;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+  .login-header {
+    text-align: center;
+    margin-bottom: 32px;
+
+    .login-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: $gray-800;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: $gray-600;
+      font-size: 16px;
+    }
+  }
+}
+
+
+
+.google-btn {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid $gray-300;
+  border-radius: $border-radius;
+  background: $white;
+  font-size: 16px;
+  font-weight: 600;
+  color: $gray-800;
+  cursor: pointer;
+  transition: $transition;
+  @include flex-center;
+  gap: 12px;
+  margin-bottom: 24px;
+  @include shimmer-effect;
+
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+}
+
+.divider {
+  @include flex-center;
+  margin: 32px 0;
+  color: $gray-500;
+  font-size: 14px;
+  font-weight: 500;
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: $gray-300;
+  }
+
+  &::before {
+    margin-right: 16px;
+  }
+
+  &::after {
+    margin-left: 16px;
+  }
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: $gray-700;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid $gray-300;
+  border-radius: $border-radius;
+  font-size: 16px;
+  color: $gray-800;
+  background: $white;
+  transition: $transition;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &::placeholder {
+    color: $gray-500;
+  }
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: $gray-600;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px;
+
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.checkbox-container {
+  @include flex-center;
+  gap: 8px;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid $gray-300;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+
+  &:checked {
+    background: $primary-color;
+    border-color: $primary-color;
+
+    &::after {
+      content: "✓";
+      position: absolute;
+      color: $white;
+      font-size: 12px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+.checkbox-label {
+  font-size: 14px;
+  color: $gray-700;
+  cursor: pointer;
+}
+
+.forgot-password {
+  color: $primary-color;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $primary-hover;
+    text-decoration: underline;
+  }
+}
+
+.login-btn {
+  width: 100%;
+  padding: 16px;
+  background: $primary-gradient;
+  border: none;
+  border-radius: $border-radius;
+  color: $white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  margin-bottom: 24px;
+  @include shimmer-effect;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.signup-link {
+  text-align: center;
+  color: $gray-600;
+  font-size: 14px;
+
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $primary-hover;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Media Queries
+@media (max-width: 480px) {
+  .login-container {
+    margin: 0;
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+
+  .company-name {
+    font-size: 24px;
+  }
+
+  .login-title {
+    font-size: 20px;
+  }
+}
+
+// Loading animation
+.loading {
+  position: relative;
+  color: transparent;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
