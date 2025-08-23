@@ -8,7 +8,10 @@ import { expandOnEnterAnimation } from 'angular-animations';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [expandOnEnterAnimation()]
+  animations: [expandOnEnterAnimation({
+    delay: 500,
+    duration: 1000
+  })]
 })
 export class AppComponent {
   title = 'entrega-dashboard';
