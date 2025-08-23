@@ -3,68 +3,73 @@
   <div class="bg-shape"></div>
   <div class="bg-shape"></div>
 
-  <div class="login-container">
-    <div class="company-logo">
-      <div class="logo-icon"></div>
-      <div class="company-name">WKTransportadora</div>
-      <div class="company-tagline">Conectando o mundo. Um pacote de cada vez</div>
+  <div class="login-container grid nested-grid">
+    <div class="col-12">
+      <div class="company-logo">
+        <div class="logo-icon"></div>
+        <div class="company-name">WKTransportadora</div>
+        <div class="company-tagline">
+          Conectando o mundo. Um pacote de cada vez
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="login-header">
+        <h1 class="login-title">Bem vindo</h1>
+        <p class="login-subtitle">Clique no botão abaixo para acessar o dashboard</p>
+      </div>
     </div>
 
-    <div class="login-header">
-      <h1 class="login-title">Bem vindo</h1>
-      <p class="login-subtitle">Entre para acessar o dashboard</p>
-    </div>
-
-    <form id="loginForm">
-      <button type="button" class="google-btn" id="googleSignIn">
+    <div class="col-12">
+      <button type="button" class="google-btn" id="googleSignIn" (click)="login()">
         <i class="fa-brands fa-google"></i>
-        Continue with Google
+        Continue com sua conta google
       </button>
-
-      <p-divider align="center">
-    <span class="text-base">Ou logue com seu email</span>
-</p-divider>
-      <div class="divider">Ou logue com seu email</div>
-
-      <div class="form-group">
-        <label for="email" class="form-label">Seu email</label>
-        <input
-          type="email"
-          id="email"
-          class="form-input"
-          placeholder="Enter your email address"
-          required
-        />
+    </div>
+    <form id="loginForm" class="col-12 grid" #loginForm (ngSubmit)="login()">
+<!--       <div class="col-12">
+        <p-divider align="center" styleClass="custom-divider">
+          <span class="text-base">Ou logue com seu email</span>
+        </p-divider>
       </div>
 
-      <div class="form-group">
-        <label for="password" class="form-label">Senha</label>
-        <div class="password-container">
+      <div class="col-12">
+        <span class="p-float-label">
           <input
-            type="password"
-            id="password"
-            class="form-input"
-            placeholder="Enter your password"
-            required
+            pInputText
+            id="loginEmail"
+            class="w-full"
+            name="loginEmail"
+            email
+            [(ngModel)]="email"
           />
-          <button type="button" class="password-toggle" id="passwordToggle">
-            Show
-          </button>
-        </div>
+          <label htmlFor="loginEmail">Seu Email</label>
+        </span>
       </div>
-
-      <div class="form-options">
-        <div class="checkbox-container">
-          <input type="checkbox" id="remember" class="checkbox" />
-          <label for="remember" class="checkbox-label">Lembrar-me</label>
-        </div>
+      <div class="col-12 mt-2">
+        <span class="p-float-label">
+          <p-password
+            id="loginPassword"
+            name="loginPassword"
+            [(ngModel)]="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            class="w-full"
+          ></p-password>
+          <label for="loginPassword">Password</label>
+        </span>
+      </div>
+      <div class="form-options col-12">
         <a href="#" class="forgot-password">Esqueceu sua senha?</a>
       </div>
-      <button type="submit" class="login-btn" id="loginBtn">ENTRAR</button>
+      <div class="col-12">
+        <button type="submit" class="login-btn" id="loginBtn">ENTRAR</button>
+      </div> -->
     </form>
 
-    <div class="signup-link">
+   <!--  <div class="signup-link">
       Não tem conta? <a href="#">Cadastre-se aqui</a>
-    </div>
+    </div> -->
   </div>
 </div>
