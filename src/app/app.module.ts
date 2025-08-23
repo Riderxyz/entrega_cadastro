@@ -23,6 +23,9 @@ import {
 import { environment } from 'src/environments/environment';
 import { registerLocaleData } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { HeaderComponent } from './components/header/header.component';
+import { FooterComponent } from './components/footer/footer.component';
+
 registerLocaleData(ptBr);
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +33,8 @@ registerLocaleData(ptBr);
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HeaderComponent,
+FooterComponent,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideAnalytics(() => getAnalytics()),

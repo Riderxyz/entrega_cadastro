@@ -1,1 +1,13 @@
-<p>header works!</p>
+<p-toolbar>
+  <div class="p-toolbar-group-left">
+    <!-- Ícone de menu -->
+    <i class="fa fa-bars menu-icon" (click)="toggleSideMenu()"></i>
+    <!-- Título da aplicação -->
+    <span class="app-title">WKTransportadora</span>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <!-- Avatar -->
+    <p-avatar [image]="avatarUrl" [label]="avatarName"></p-avatar>
+  </div>
+</p-toolbar>
