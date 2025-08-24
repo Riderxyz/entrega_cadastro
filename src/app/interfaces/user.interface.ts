@@ -55,7 +55,7 @@ export interface UserInterface {
   /**
    * Preferências personalizadas do usuário (UI/UX).
    */
-  settings?: {
+  settings: {
     /**
      * Define se o usuário prefere o tema escuro.
      */

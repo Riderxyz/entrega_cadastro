@@ -10,6 +10,13 @@
   </div>
 
   <div class="p-toolbar-group-right">
+    <p-button icon="fa-solid fa-sun" [text]="true"></p-button>
+
+    <p-inputSwitch
+      [(ngModel)]="isDarkModeActive"
+      (ngModelChange)="toggleTheme()"
+    ></p-inputSwitch>
+    <p-button icon="fa-solid fa-moon" [text]="true"></p-button>
     <!-- Avatar -->
     <div class="flex gap-2">
       <p-avatar [image]="avatarUrl" size="large"></p-avatar>
