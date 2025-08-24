@@ -8,20 +8,33 @@ import { expandOnEnterAnimation } from 'angular-animations';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [expandOnEnterAnimation({
-    delay: 500,
-    duration: 1000
-  })]
+  animations: [
+    expandOnEnterAnimation({
+      delay: 500,
+      duration: 1000,
+    }),
+  ],
 })
 export class AppComponent {
   title = 'entrega-dashboard';
-  isMenuOpen = false
-  private readonly centralRxJsSrv: CentralRxJsService = inject(CentralRxJsService);
+  isMenuOpen = false;
+  isLoggedIn = false;
+  private readonly centralRxJsSrv: CentralRxJsService =
+    inject(CentralRxJsService);
   readonly AuthSrv: AuthService = inject(AuthService);
   constructor() {
-this.centralRxJsSrv.dataToReceive.subscribe((res) => {
-  console.log(res);
-  this.isMenuOpen = !this.isMenuOpen;
-})
+    this.centralRxJsSrv.dataToReceive.subscribe((res) => {
+      console.log(res);
+      this.isMenuOpen = !this.isMenuOpen;
+    });
+    //this.AuthSrv.logout().subscribe();
+    this.AuthSrv.authUser$.subscribe((res) => {
+      console.log(res);
+      if (res) {
+        this.isLoggedIn = true;
+      } else {
+        this.isLoggedIn = false;
+      }
+    });
   }
 }

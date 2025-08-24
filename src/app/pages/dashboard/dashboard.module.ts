@@ -3,15 +3,19 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-
-
+import { StatusCardsComponent } from './status-cards/status-cards.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { CardModule } from 'primeng/card';
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    StatusCardsComponent
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    CardModule,
+    DashboardRoutingModule,
+    AgGridModule
   ]
 })
 export class DashboardModule { }

@@ -6,7 +6,7 @@
 </aside>
   <div class="main-body">
     <div class="overlay" *ngIf="isMenuOpen" (click)="isMenuOpen = false"></div>
-    <div @expandOnEnter *ngIf="AuthSrv.isLoggedIn">
+    <div @expandOnEnter *ngIf="isLoggedIn">
       <app-header></app-header>
     </div>
     <router-outlet></router-outlet>
