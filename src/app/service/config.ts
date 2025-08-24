@@ -3,4 +3,9 @@ export const config = {
     dashboardFilter: 'DASHBOARDFILTER',
     sidebar: 'SIDEBAR'
   },
+  firebaseCollectionKeys: {
+    users: 'usuarios',
+    entregas: 'entregas',
+    historico: 'historico',
+  }
 }

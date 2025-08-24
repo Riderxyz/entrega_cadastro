@@ -1,50 +1,85 @@
-import { Injectable } from '@angular/core';
-import { FirestoreDataConverter, Timestamp, DocumentData } from '@angular/fire/firestore';
+import { inject, Injectable } from '@angular/core';
+import {
+  FirestoreDataConverter,
+  Timestamp,
+  DocumentData,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+} from '@angular/fire/firestore';
 import { UserInterface } from '../interfaces/user.interface';
+import { EnderecoInterface } from '../interfaces/endereco.interface';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
+  private readonly http: HttpClient = inject(HttpClient);
   constructor() {}
 
   /**
-   * Retorna o conversor Firestore para UserInterface.
+   * Retorna o conversor Firestore de timestamp para Date e vice-versa.
    *
    * Útil para usar com `.withConverter(...)` em coleções/documentos
    * e manter os campos Date ↔ Timestamp convertidos automaticamente.
+   * @param dateFields nomes dos campos que devem ser convertidos
    */
-  userConverter(): FirestoreDataConverter<UserInterface> {
+  genericConverter<T>(dateFields: (keyof T)[] = []): FirestoreDataConverter<T> {
     return {
-      toFirestore(user: UserInterface): DocumentData {
-        return {
-          ...user,
-          createdAt: user.createdAt ? Timestamp.fromDate(user.createdAt) : null,
-          lastLogin: user.lastLogin ? Timestamp.fromDate(user.lastLogin) : null,
-        };
+      toFirestore(model: T): DocumentData {
+        const data: any = { ...model };
+
+        for (const field of dateFields) {
+          const value = data[field as string];
+          data[field as string] =
+            value instanceof Date ? Timestamp.fromDate(value) : value ?? null;
+        }
+
+        return data;
       },
-      fromFirestore(snapshot, options): UserInterface {
-        const data = snapshot.data(options)!;
-        return {
-          ...data,
-          createdAt: data['createdAt']?.toDate() ?? null,
-          lastLogin: data['lastLogin']?.toDate() ?? null,
-        } as UserInterface;
+
+      fromFirestore(
+        snapshot: QueryDocumentSnapshot,
+        options: SnapshotOptions
+      ): T {
+        const data: any = snapshot.data(options);
+
+        for (const field of dateFields) {
+          const value = data[field as string];
+          data[field as string] =
+            value instanceof Timestamp ? value.toDate() : value ?? null;
+        }
+
+        return data as T;
       },
     };
   }
 
   /**
-   * Converte um Date para Timestamp (Firestore).
+   * Faz uma requisição GET para a API do ViaCEP,
+   * retornando um Observable com os dados do endereço
+   * correspondente ao CEP informado.
+   * @param cep CEP a ser consultado
+   * @returns Observable com os dados do endereço
    */
-  dateToTimestamp(date?: Date): Timestamp | null {
-    return date ? Timestamp.fromDate(date) : null;
+  getEnderecoByCep(cep: string): Observable<EnderecoInterface> {
+    return this.http.get<EnderecoInterface>(
+      `https://viacep.com.br/ws/${cep}/json/`
+    );
   }
 
   /**
-   * Converte um Timestamp em Date puro.
-   * Se já for Date, retorna ele mesmo.
+   * Formata um endereço em uma única linha padrão.
    */
-  toDate(value?: Date | Timestamp | null): Date | null {
-    if (!value) return null;
-    return value instanceof Timestamp ? value.toDate() : value;
+  formatarEndereco(endereco: EnderecoInterface): string {
+    if (!endereco) return '';
+
+    const { logradouro, complemento, bairro, localidade, uf, cep } = endereco;
+
+    let linha = logradouro;
+    if (complemento && complemento.trim() !== '') {
+      linha += `, ${complemento}`;
+    }
+
+    return `${linha} – ${bairro}, ${localidade}/${uf} – CEP ${cep}`;
   }
 }
