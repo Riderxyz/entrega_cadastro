@@ -1,1 +1,14 @@
-<p>status-cards works!</p>
+<p-card styleClass="status-card">
+  <div class="card-content">
+    <div class="icon-container">
+      <div class="icon" [style.color]="card.color">
+        <i [ngClass]="card.icon"></i>
+      </div>
+      <h2>{{ card.value }}</h2>
+    </div>
+    <div class="details">
+      <p class="title">{{ card.title }}</p>
+      <p class="subtitle">{{ card.subtitle }}</p>
+    </div>
+  </div>
+</p-card>

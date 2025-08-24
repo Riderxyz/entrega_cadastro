@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { StatusCardInterface } from 'src/app/interfaces/statusCard.onterface';
 
 @Component({
   selector: 'app-status-cards',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./status-cards.component.scss']
 })
 export class StatusCardsComponent {
-
+  @Input() card!: StatusCardInterface;
 }

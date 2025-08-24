@@ -1,0 +1,40 @@
+::ng-deep .status-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+// padding: 1rem;
+
+  .card-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    .icon-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      .icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .details {
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-color-secondary);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+  }
+}

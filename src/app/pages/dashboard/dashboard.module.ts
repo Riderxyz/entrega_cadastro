@@ -8,6 +8,7 @@ import { AgGridModule } from 'ag-grid-angular';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { PanelModule } from 'primeng/panel';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -18,6 +19,7 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     CardModule,
     InputTextModule,
     ScrollPanelModule,
+    PanelModule,
     DashboardRoutingModule,
     AgGridModule
   ]

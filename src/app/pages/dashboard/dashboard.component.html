@@ -1,14 +1,42 @@
+<h1>Dashboard</h1>
+<p-scrollPanel [style]="{ width: '100%', height: '70vh',  }">
+  <div class="grid p-1">
+    <div class="col-12 lg:col-3" *ngFor="let item of statusCards">
+      <app-status-cards [card]="item"></app-status-cards>
+    </div>
 
+    <div class="col-12 lg:col-6">
+      <p-panel header="Quantas entregas estão programadas para hoje">
+        <div class="flex align-items-center justify-content-center">
+          <h3 *ngIf="entregasParaHoje.length > 0; else noEntregas">
+            {{ entregasParaHoje.length }} Entregas para hoje
+          </h3>
 
-
-<p-scrollPanel [style]="{ width: '100%', height: '150px' }">
-
-<ag-grid-angular [gridOptions]="gridOptions"
-
-[class.ag-theme-material-dark]="showGridInDarkMode"
-[class.ag-theme-material]="!showGridInDarkMode"
-style="width: 100%; height: 80vh;">
-
-</ag-grid-angular>
-
+          <ng-template #noEntregas>
+            <div class="flex flex-column align-items-center justify-content-center'">
+              <i class="pi pi-inbox"></i>
+              <h3>Não há entregas para hoje</h3>
+            </div>
+          </ng-template>
+        </div>
+      </p-panel>
+    </div>
+        <div class="col-12 lg:col-6">
+      <p-card styleClass="add-entrega-card">
+        <div class="flex align-items-center justify-content-center">
+            <div class="flex flex-column align-items-center justify-content-center ">
+              <i class="fa-solid fa-2x fa-plus"></i>
+              <h3>Clique aqui para cadastrar uma nova entrega</h3>
+            </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+  <ag-grid-angular
+    [gridOptions]="gridOptions"
+    [class.ag-theme-material-dark]="showGridInDarkMode"
+    [class.ag-theme-material]="!showGridInDarkMode"
+    style="width: 100%; height: 60vh"
+  >
+  </ag-grid-angular>
 </p-scrollPanel>
