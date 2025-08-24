@@ -26,6 +26,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { MenuComponent } from "./components/menu/menu.component";
+import { ToastComponent } from './components/toast/toast.component';
 
 registerLocaleData(ptBr);
 @NgModule({
@@ -37,6 +38,7 @@ registerLocaleData(ptBr);
     HeaderComponent,
     FooterComponent,
     MenuComponent,
+    ToastComponent,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideAnalytics(() => getAnalytics()),

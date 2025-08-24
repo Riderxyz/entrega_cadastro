@@ -9,7 +9,7 @@ import {
 import { UserInterface } from '../interfaces/user.interface';
 import { EnderecoInterface } from '../interfaces/endereco.interface';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UtilService {
@@ -62,9 +62,21 @@ export class UtilService {
    * @returns Observable com os dados do endereço
    */
   getEnderecoByCep(cep: string): Observable<EnderecoInterface> {
-    return this.http.get<EnderecoInterface>(
+    return this.http.get<EnderecoInterface | { erro: string }>(
       `https://viacep.com.br/ws/${cep}/json/`
+    )
+    .pipe(
+      map(response => {
+        if ('erro' in response && response.erro === 'true') {
+          throw new Error('CEP não encontrado');
+        }
+        return response as EnderecoInterface;
+      }),
+      catchError(error => {
+        return throwError(() => new Error('Erro ao buscar CEP: ' + error.message));
+      })
     );
+    ;
   }
 
   /**

@@ -17,6 +17,9 @@ import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
 import { EntregaService } from 'src/app/service/entregas.service';
 import { v4 as uuidv4 } from 'uuid';
+import { UtilService } from 'src/app/service/util.service';
+import { debounce, debounceTime, filter } from 'rxjs';
+import { ToastService } from 'src/app/service/toast.service';
 interface SelectOption<T = any> {
   label: string;
   value: T;
@@ -82,6 +85,8 @@ export class EntregaFormComponent {
   maxEnvio = new Date(new Date().setDate(new Date().getDate() + 1));
   minEntrega = new Date();
   private readonly entregaSrv: EntregaService = inject(EntregaService);
+  private readonly toastSrv: ToastService = inject(ToastService);
+  private readonly utilSrv: UtilService = inject(UtilService);
   constructor() {}
 
   onSubmit(form: NgForm) {
@@ -89,5 +94,31 @@ export class EntregaFormComponent {
       this.entregaObject.id = uuidv4();
     }
     this.entregaSrv.updateEntrega(this.entregaObject).then((res) => {});
+  }
+
+  onCepChange() {
+    console.log(this.entregaObject.endereco.cep);
+    const cepLimpo = this.entregaObject.endereco.cep.replace(/\D/g, '');
+
+    if (cepLimpo.length === 8) {
+      this.utilSrv
+        .getEnderecoByCep(this.entregaObject.endereco.cep)
+        .pipe(debounceTime(1500))
+        .subscribe({
+          next: (endereco) => {
+            this.entregaObject.endereco = { ...endereco, numero: '0' };
+            //this.entregaObject.endereco.cep = cepLimpo;
+          },
+          error: (err) => {
+            console.warn(err);
+            this.toastSrv.notify(
+              'error',
+              'CEP não encontrado',
+              'Por favor, insira os dados manualmente ou tente novamente',
+              3000
+            );
+          },
+        });
+    }
   }
 }

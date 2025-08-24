@@ -105,6 +105,7 @@
             id="cep"
             name="cep"
             [(ngModel)]="entregaObject.endereco.cep"
+            (ngModelChange)="onCepChange()"
             #cep="ngModel"
             [required] = "true"
             placeholder="00000-000">
