@@ -1,1 +1,262 @@
-<p>entrega-form works!</p>
+  <form #entregaForm="ngForm" (ngSubmit)="onSubmit(entregaForm)">
+    <div class="grid formgrid">
+      <!-- Dados básicos -->
+      <div class="col-12">
+        <h3 class="m-0">Dados da Entrega</h3>
+        <p-divider></p-divider>
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="cliente">Cliente *</label>
+        <input
+          pInputText
+          id="cliente"
+          name="cliente"
+          required
+          minlength="3"
+          [(ngModel)]="entregaObject.cliente"
+          #cliente="ngModel"
+          placeholder="Nome do cliente" />
+
+      </div>
+
+      <div class="field col-12 md:col-6">
+        <label for="produto">Produto *</label>
+        <input
+          pInputText
+          id="produto"
+          name="produto"
+          required
+          minlength="2"
+          [(ngModel)]="entregaObject.produto"
+          #produto="ngModel"
+          placeholder="Descrição do produto" />
+
+      </div>
+
+      <div class="field col-12 md:col-4">
+        <label for="dataEnvio">Data de Envio *</label>
+        <p-calendar
+          inputId="dataEnvio"
+          name="dataEnvio"
+          [(ngModel)]="entregaObject.dataEnvio"
+          #dataEnvio="ngModel"
+          [required]="true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          [minDate]="minEnvio"
+          [maxDate]="maxEnvio">
+        </p-calendar>
+
+      </div>
+
+      <div class="field col-12 md:col-4">
+        <label for="dataEstimadaEntrega">Estimativa de Entrega *</label>
+        <p-calendar
+          inputId="dataEstimadaEntrega"
+          name="dataEstimadaEntrega"
+          [(ngModel)]="entregaObject.dataEstimadaEntrega"
+          #dataEstimadaEntrega="ngModel"
+          [required] = "true"
+          [showIcon]="true"
+          dateFormat="dd/mm/yy"
+          [minDate]="minEntrega">
+        </p-calendar>
+      </div>
+
+      <div class="field col-12 md:col-4">
+        <label for="status">Status *</label>
+        <p-dropdown
+          inputId="status"
+          name="status"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="entregaObject.status"
+          #status="ngModel"
+          [required]="true"
+          placeholder="Selecione">
+        </p-dropdown>
+      </div>
+
+      <div class="field col-12">
+        <label for="observacoes">Observações</label>
+        <textarea
+          pInputTextarea
+          id="observacoes"
+          name="observacoes"
+          [(ngModel)]="entregaObject.observacoes"
+          rows="3"
+          [autoResize]="true"
+          placeholder="Notas adicionais..."></textarea>
+      </div>
+
+      <!-- Endereço -->
+      <div class="col-12">
+        <h3 class="m-0">Endereço</h3>
+        <p-divider></p-divider>
+      </div>
+
+      <div ngModelGroup="endereco" #enderecoGroup="ngModelGroup" class="grid w-full">
+        <div class="field col-12 md:col-3">
+          <label for="cep">CEP *</label>
+          <p-inputMask
+            mask="99999-999"
+            id="cep"
+            name="cep"
+            [(ngModel)]="entregaObject.endereco.cep"
+            #cep="ngModel"
+            [required] = "true"
+            placeholder="00000-000">
+          </p-inputMask>
+        </div>
+
+        <div class="field col-12 md:col-7">
+          <label for="logradouro">Logradouro *</label>
+          <input
+            pInputText
+            id="logradouro"
+            name="logradouro"
+            required
+            [(ngModel)]="entregaObject.endereco.logradouro"
+            #logradouro="ngModel"
+            placeholder="Rua/Avenida" />
+        </div>
+
+        <div class="field col-12 md:col-2">
+          <label for="numero">Número *</label>
+          <input
+            pInputText
+            id="numero"
+            name="numero"
+            required
+            [(ngModel)]="entregaObject.endereco.numero"
+            #numero="ngModel"
+            placeholder="Nº" />
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="bairro">Bairro *</label>
+          <input
+            pInputText
+            id="bairro"
+            name="bairro"
+            required
+            [(ngModel)]="entregaObject.endereco.bairro"
+            #bairro="ngModel"
+            placeholder="Bairro" />
+        </div>
+
+        <div class="field col-12 md:col-4">
+          <label for="localidade">Cidade *</label>
+          <input
+            pInputText
+            id="localidade"
+            name="localidade"
+            required
+            [(ngModel)]="entregaObject.endereco.localidade"
+            #localidade="ngModel"
+            placeholder="Cidade" />
+
+        </div>
+
+        <div class="field col-12 md:col-2">
+          <label for="uf">UF *</label>
+          <p-dropdown
+            inputId="uf"
+            name="uf"
+            [options]="ufOptions"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="entregaObject.endereco.uf"
+            #uf="ngModel"
+            [required]="true"
+            placeholder="UF">
+          </p-dropdown>
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="complemento">Complemento</label>
+          <input
+            pInputText
+            id="complemento"
+            name="complemento"
+            [(ngModel)]="entregaObject.endereco.complemento"
+            placeholder="Apto, bloco, referência..." />
+        </div>
+
+        <div class="field col-12 md:col-6">
+          <label for="logradouro-unidade">Unidade</label>
+          <input
+            pInputText
+            id="logradouro-unidade"
+            name="unidade"
+            [(ngModel)]="entregaObject.endereco.unidade"
+            placeholder="Unidade" />
+        </div>
+
+        <!-- Campos adicionais do seu modelo (opcionais no form) -->
+        <div class="field col-12 md:col-3">
+          <label for="estado">Estado (nome)</label>
+          <input pInputText id="estado" name="estado" [(ngModel)]="entregaObject.endereco.estado" />
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="regiao">Região</label>
+          <input pInputText id="regiao" name="regiao" [(ngModel)]="entregaObject.endereco.regiao" />
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="ddd">DDD</label>
+          <input pInputText id="ddd" name="ddd" [(ngModel)]="entregaObject.endereco.ddd" />
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="ibge">IBGE</label>
+          <input pInputText id="ibge" name="ibge" [(ngModel)]="entregaObject.endereco.ibge" />
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="gia">GIA</label>
+          <input pInputText id="gia" name="gia" [(ngModel)]="entregaObject.endereco.gia" />
+        </div>
+        <div class="field col-12 md:col-3">
+          <label for="siafi">SIAFI</label>
+          <input pInputText id="siafi" name="siafi" [(ngModel)]="entregaObject.endereco.siafi" />
+        </div>
+      </div>
+
+      <!-- Metadados -->
+      <div class="col-12">
+        <h3 class="m-0">Metadados</h3>
+        <p-divider></p-divider>
+      </div>
+
+      <div class="field col-12 md:col-4">
+        <label for="createdBy">Criado por *</label>
+        <input
+          pInputText
+          id="createdBy"
+          name="createdBy"
+          required
+          [(ngModel)]="entregaObject.createdBy"
+          #createdBy="ngModel"
+          placeholder="Usuário responsável" />
+
+      </div>
+
+      <div class="field-checkbox col-12 md:col-4 flex align-items-end">
+        <p-checkbox
+          inputId="arquivado"
+          name="arquivado"
+          [(ngModel)]="entregaObject.arquivado"
+          [binary]="true"></p-checkbox>
+        <label for="arquivado" class="ml-2">Arquivado</label>
+      </div>
+
+      <!-- Ações -->
+      <div class="col-12 flex gap-2 justify-content-end">
+        <button pButton type="button" label="Limpar" class="p-button-secondary"
+                >
+        </button>
+        <button pButton type="submit" label="Salvar" [disabled]="entregaForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+

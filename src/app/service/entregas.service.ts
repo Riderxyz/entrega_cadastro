@@ -77,7 +77,7 @@ export class EntregaService {
   }
 
   updateEntrega(entrega: EntregaInterface) {
-    return setDoc(this.entregaDocRef(entrega.id), entrega);
+    return setDoc(this.entregaDocRef(entrega.id), entrega, { merge: true });
   }
 
   archiveEntrega(id: string) {

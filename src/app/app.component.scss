@@ -1,6 +1,7 @@
 .app-container {
   display: flex;
   height: calc(100vh); /* altura do toolbar */
+
   aside {
     width: 0;
     overflow-y: auto;
@@ -16,15 +17,17 @@
     width: 100%;
     padding: 0.25rem;
     transition: margin-left 0.5s;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // Garante altura mínima
   }
 
-
   .expanding + .main-body {
-  margin-left: 1rem;
-  position: relative;
-}
+    margin-left: 1rem;
+    position: relative;
+  }
 
-.overlay{
+  .overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -32,5 +35,15 @@
     height: 100%;
     background-color: #00000080;
     z-index: 9999;
+  }
 }
+
+// Classe para o conteúdo principal crescer
+.content-wrapper {
+  flex: 1;
+}
+
+// Garantir que o footer fique na base
+.footer-wrapper {
+  margin-top: auto;
 }

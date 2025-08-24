@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { StatusCardInterface } from 'src/app/interfaces/statusCard.onterface';
+import { StatusCardInterface } from 'src/app/interfaces/statusCard.interface';
 
 @Component({
   selector: 'app-status-cards',

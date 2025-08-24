@@ -1,6 +1,9 @@
 import { EnderecoInterface, getEmptyEndereco } from './endereco.interface';
 
 export interface EntregaInterface {
+  /**
+   * UUID da entrega
+    */
   id: string;
   cliente: string;
   dataEnvio: Date;

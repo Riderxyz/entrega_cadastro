@@ -9,15 +9,20 @@ import { EntregaService } from 'src/app/service/entregas.service';
 import { AG_GRID_LOCALE_BR } from '@ag-grid-community/locale';
 import { ThemeService } from 'src/app/service/theme.service';
 import { entregasMock } from 'src/app/interfaces/mock';
-import { StatusCardInterface } from 'src/app/interfaces/statusCard.onterface';
+import { StatusCardInterface } from 'src/app/interfaces/statusCard.interface';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/entrega-form.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  providers: [DialogService]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly entregaSrv: EntregaService = inject(EntregaService);
+   private dialogSrv = inject(DialogService);
+  ref: DynamicDialogRef | undefined;
   gridOptions: GridOptions<EntregaInterface> = {
     localeText: AG_GRID_LOCALE_BR,
     columnDefs: [
@@ -61,14 +66,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
         error: () => {},
       });
-  }
-
-  onlyRunOnce() {
-    entregasMock.forEach((entrega) => {
-      this.entregaSrv.addEntrega(entrega).then((res) => {
-        console.log('Finalizado');
-      });
-    });
   }
 
   getStatusCardData(entregasArr: EntregaInterface[]) {
@@ -141,6 +138,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
     });
     this.entregasParaHoje = entregasParaHoje;
+  }
+
+
+  addNewEntrega() {
+this.ref = this.dialogSrv.open(EntregaFormComponent, {
+      header: 'Nova Entrega',
+      width: '70%',
+      data: {} // sem entrega → inclusão
+    });
   }
   ngOnDestroy(): void {}
 }
