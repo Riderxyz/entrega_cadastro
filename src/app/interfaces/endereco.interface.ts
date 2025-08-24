@@ -6,6 +6,7 @@ export interface EnderecoInterface {
   bairro: string;
   localidade: string;
   uf: string;
+  numero: string;
   estado: string;
   regiao: string;
   ibge: string;
@@ -19,6 +20,7 @@ export const getEmptyEndereco = (): EnderecoInterface => ({
   logradouro: '',
   complemento: '',
   unidade: '',
+  numero: '',
   bairro: '',
   localidade: '',
   uf: '',

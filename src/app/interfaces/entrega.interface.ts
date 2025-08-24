@@ -1,4 +1,4 @@
-import { EnderecoInterface, getEmptyEndereco } from "./endereco.interface";
+import { EnderecoInterface, getEmptyEndereco } from './endereco.interface';
 
 export interface EntregaInterface {
   id: string;
@@ -10,8 +10,10 @@ export interface EntregaInterface {
   produto: string;
   dataEstimadaEntrega: Date;
   observacoes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
   arquivado: boolean;
-
 }
 
 export const getEmptyEntrega = (): EntregaInterface => ({
@@ -23,11 +25,13 @@ export const getEmptyEntrega = (): EntregaInterface => ({
   enderecoFormatado: '',
   produto: '',
   dataEstimadaEntrega: new Date(),
+  updatedAt: new Date(),
+  createdAt: new Date(),
+  createdBy: '',
   observacoes: '',
-  arquivado: false
-//  historico: [],
+  arquivado: false,
+  //  historico: [],
 });
-
 
 export enum EntregaStatus {
   Pendente = 'Pendente',
