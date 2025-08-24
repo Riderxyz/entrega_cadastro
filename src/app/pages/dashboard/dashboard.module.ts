@@ -6,6 +6,8 @@ import { DashboardComponent } from './dashboard.component';
 import { StatusCardsComponent } from './status-cards/status-cards.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -14,6 +16,8 @@ import { CardModule } from 'primeng/card';
   imports: [
     CommonModule,
     CardModule,
+    InputTextModule,
+    ScrollPanelModule,
     DashboardRoutingModule,
     AgGridModule
   ]

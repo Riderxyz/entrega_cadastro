@@ -73,13 +73,13 @@ export class UtilService {
   formatarEndereco(endereco: EnderecoInterface): string {
     if (!endereco) return '';
 
-    const { logradouro, complemento, bairro, localidade, uf, cep } = endereco;
+    const { logradouro, numero, complemento, bairro, localidade, uf, cep } = endereco;
 
     let linha = logradouro;
     if (complemento && complemento.trim() !== '') {
       linha += `, ${complemento}`;
     }
 
-    return `${linha} – ${bairro}, ${localidade}/${uf} – CEP ${cep}`;
+    return `${linha}, ${numero} – ${bairro}, ${localidade}/${uf} – CEP ${cep}`;
   }
 }
