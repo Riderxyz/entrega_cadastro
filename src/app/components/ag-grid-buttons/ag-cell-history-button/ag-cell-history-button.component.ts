@@ -13,9 +13,9 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
  imports: [CommonModule, ButtonModule, TooltipModule, ConfirmPopupModule],
   template: `
    <p-button
-      icon="fa-solid fa-box-archive"
+icon="fa-solid fa-folder-open"
       pTooltip="verificar historico da entrega"
-      [severity]="'secondary'"
+      [severity]="'info'"
       (click)="onClick()"
     ></p-button>
   `,

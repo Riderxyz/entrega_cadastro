@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EntregaInterface, getEmptyEntrega } from 'src/app/interfaces/entrega.interface';
 import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-historico-entrega',
   templateUrl: './historico-entrega.component.html',
   standalone: true,
-  imports: [CommonModule, TimelineModule, TagModule, ButtonModule, CardModule, DatePipe],
+  imports: [CommonModule, TimelineModule, TagModule, DividerModule, ButtonModule, CardModule, DatePipe],
 
   styleUrls: ['./historico-entrega.component.scss'],
 })

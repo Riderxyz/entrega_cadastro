@@ -56,8 +56,8 @@ export class AgCellStatusForwardButtonComponent
   private readonly entregaSrv: EntregaService = inject(EntregaService);
   private readonly confirmationDialogSrv: ConfirmationService =
     inject(ConfirmationService);
-    private readonly authSrv: AuthService =   inject(AuthService);
-    private readonly toastSrv: ToastService = inject(ToastService)
+  private readonly authSrv: AuthService = inject(AuthService);
+  private readonly toastSrv: ToastService = inject(ToastService);
   showStatusChangeLoading = false;
   agInit(params: ICellRendererParams<EntregaInterface>): void {
     this.params = params;
@@ -77,15 +77,6 @@ export class AgCellStatusForwardButtonComponent
 
   onClick(event: Event): void {
     console.log(this.params);
-    /*     this.entregaSrv.addHistoricoEntrega(this.params.data.id, {
-      status: this.proximoStatus,
-      date: new Date(),
-      id: uuidv4(),
-      observacoes: '',
-    })
-    if (this.params && this.params.moveStatusForward) {
-     // this.params.moveStatusForward(this.params.data);
-    } */
     this.confirmationDialogSrv.confirm({
       target: event.target as EventTarget,
       message:
@@ -95,25 +86,29 @@ export class AgCellStatusForwardButtonComponent
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.showStatusChangeLoading = true;
-const entregaObj = this.params.data;
-entregaObj.status = this.proximoStatus
-entregaObj.updatedAt = new Date();
-entregaObj.updatedBy = this.params.data.createdBy
-        this.entregaSrv.updateEntrega(entregaObj).then((res) => {
-
-        })
-        this.entregaSrv.addHistoricoEntrega(entregaObj.id, {
-          status: this.proximoStatus,
-          date: new Date(),
-          id: uuidv4(),
-          observacoes: '',
-        }).then((res) => {
-          this.toastSrv.notify('info', 'Status modificado', 'Status da entrega foi movido para "'+ this.proximoStatus + '"', 3000);
-          if (this.params && this.params.moveStatusForward) {
-            // this.params.moveStatusForward(this.params.data);
-          }
-
-        });
+        const entregaObj = this.params.data;
+        entregaObj.status = this.proximoStatus;
+        entregaObj.updatedAt = new Date();
+        entregaObj.updatedBy = this.params.data.createdBy;
+        this.entregaSrv.updateEntrega(entregaObj).then((res) => {});
+        this.entregaSrv
+          .addHistoricoEntrega(entregaObj.id, {
+            status: this.proximoStatus,
+            date: new Date(),
+            id: uuidv4(),
+            observacoes: '',
+          })
+          .then((res) => {
+            this.toastSrv.notify(
+              'info',
+              'Status modificado',
+              'Status da entrega foi movido para "' + this.proximoStatus + '"',
+              3000
+            );
+            if (this.params && this.params.moveStatusForward) {
+              // this.params.moveStatusForward(this.params.data);
+            }
+          });
       },
       reject: () => {
         //this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });

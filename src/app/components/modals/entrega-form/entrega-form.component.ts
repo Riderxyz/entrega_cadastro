@@ -67,7 +67,7 @@ export class EntregaFormComponent {
   minEnvio = new Date(new Date().setDate(new Date().getDate() - 30));
   maxEnvio = new Date(new Date().setDate(new Date().getDate() + 1));
   minEntrega = new Date();
-  EntregaStatus =   EntregaStatus;
+  EntregaStatus = EntregaStatus;
   private readonly entregaSrv: EntregaService = inject(EntregaService);
   private readonly toastSrv: ToastService = inject(ToastService);
   private readonly utilSrv: UtilService = inject(UtilService);
@@ -128,7 +128,7 @@ export class EntregaFormComponent {
         .pipe(debounceTime(1500))
         .subscribe({
           next: (endereco) => {
-            this.onChangeRegiao(endereco.regiao)
+            this.onChangeRegiao(endereco.regiao);
             this.entregaObject.endereco = { ...endereco, numero: '0' };
           },
           error: (err) => {

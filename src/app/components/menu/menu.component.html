@@ -1,10 +1,38 @@
-<p>menu works!</p>
-<div class="grid w-full">
-  <div class="col-12">
+<div class="flex flex-column h-full relative">
+  <!-- HEADER -->
+  <p-card class="mb-3">
+ <!--    <ng-template pTemplate="title">
+
+    </ng-template> -->
+    <div class="flex align-items-center">
+        <img
+          src="assets/images/menuLogo.png"
+          alt="Logo WK"
+          class="mr-2"
+          style="width: 40px; height: 40px"
+        />
+        <span class="font-bold text-xl">WK Transportadora</span>
+      </div>
+  </p-card>
+
+  <!-- MENU -->
+  <div class="flex-grow-1 overflow-y-auto px-2">
+    <div class="col-12" *ngFor="let item of menuBtnArr">
+      <p-button
+        [label]="item.label"
+        styleClass="w-full"
+        [outlined]="true"
+        (click)="goTo(item.url)"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- BOTÃO SAIR -->
+  <div class="col-12 mt-auto px-2 pb-3">
     <p-button
       label="Sair"
       severity="danger"
-      styleClass="w-full"
+      styleClass="w-full logout"
       [outlined]="true"
       (click)="sair()"
     ></p-button>
