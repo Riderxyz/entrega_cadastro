@@ -12,7 +12,7 @@
       <router-outlet></router-outlet>
     </div>
 
-      <div class="footer-wrapper">
+      <div @zoomInUpOnEnter class="footer-wrapper" *ngIf="isLoggedIn">
     <app-footer></app-footer>
     </div>
   </div>

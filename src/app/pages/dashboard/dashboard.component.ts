@@ -12,17 +12,18 @@ import { ThemeService } from 'src/app/service/theme.service';
 import { StatusCardInterface } from 'src/app/interfaces/statusCard.interface';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/entrega-form.component';
-import { AgCellStatusForwardButtonComponent } from 'src/app/components/ag-cell-statusforward-button/ag-cell-statusforward-button.component';
+import { AgCellStatusForwardButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-statusforward-button/ag-cell-statusforward-button.component';
+import { AgCellHistoryButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-history-button/ag-cell-history-button.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DialogService]
+  providers: [DialogService],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly entregaSrv: EntregaService = inject(EntregaService);
-   private dialogSrv = inject(DialogService);
+  private dialogSrv = inject(DialogService);
   ref: DynamicDialogRef | undefined;
   gridOptions: GridOptions<EntregaInterface> = {
     localeText: AG_GRID_LOCALE_BR,
@@ -34,15 +35,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       { field: 'dataEnvio', headerName: 'Data Envio' },
       { field: 'status', headerName: 'Status' },
       {
-         headerName: 'Avançar',
-      cellRenderer: AgCellStatusForwardButtonComponent,
-      cellRendererParams: {
-        moveStatusForward: (
-          rowData: EntregaInterface
-        ) => console.log(rowData)
-        ,
+        headerName: 'Avançar',
+        filter: false,
+        sortable: false,
+        editable: false,
+        cellRenderer: AgCellStatusForwardButtonComponent,
+        cellRendererParams: {
+          moveStatusForward: (rowData: EntregaInterface) =>
+            console.log(rowData),
+        },
       },
-    },
+      {
+        headerName: 'Historico',
+        filter: false,
+        sortable: false,
+        editable: false,
+        cellRenderer: AgCellHistoryButtonComponent,
+        cellRendererParams: {
+          onHistory: (rowData: EntregaInterface) =>
+            console.log(rowData),
+        },
+      },
     ],
     defaultColDef: {
       editable: false,
@@ -97,7 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     );
 
     this.statusCards = [
-/*       {
+      /*       {
         title: 'Total Entregas',
         subtitle: 'Total de entregas cadastradas',
         icon: 'fa-solid fa-truck',
@@ -153,12 +166,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.entregasParaHoje = entregasParaHoje;
   }
 
-
   addNewEntrega() {
-this.ref = this.dialogSrv.open(EntregaFormComponent, {
+    this.ref = this.dialogSrv.open(EntregaFormComponent, {
       header: 'Nova Entrega',
       width: '70%',
-      data: {} // sem entrega → inclusão
+      data: {}, // sem entrega → inclusão
     });
   }
   ngOnDestroy(): void {}

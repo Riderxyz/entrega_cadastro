@@ -42,5 +42,6 @@ export enum EntregaStatus {
   Pendente = 'Pendente',
   EmRota = 'Em Rota',
   Entregue = 'Entregue',
+  
   Cancelada = 'Cancelada',
 }
