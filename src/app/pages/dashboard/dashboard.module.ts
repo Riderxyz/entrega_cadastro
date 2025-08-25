@@ -9,6 +9,8 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -17,8 +19,10 @@ import { PanelModule } from 'primeng/panel';
   imports: [
     CommonModule,
     CardModule,
+    ButtonModule,
     InputTextModule,
     ScrollPanelModule,
+    TooltipModule,
     PanelModule,
     DashboardRoutingModule,
     AgGridModule

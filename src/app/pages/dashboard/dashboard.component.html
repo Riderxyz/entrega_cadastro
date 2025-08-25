@@ -40,7 +40,16 @@
       </p-card>
     </div>
     <div class="col-12">
-      <p-panel header="Ultimas 5 entregas criadas">
+      <p-panel header="Ultimas 5 entregas criadas"
+      >
+      <ng-template pTemplate="icons">
+        <p-button icon="fa-solid fa-up-right-from-square"
+        [text]="true"
+        tooltipPosition="left"
+        pTooltip="Abrir toda lista de entregas"
+        [severity]="'info'"></p-button>
+      </ng-template>
+
         <ag-grid-angular
           [gridOptions]="gridOptions"
           [class.ag-theme-material-dark]="showGridInDarkMode"

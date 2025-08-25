@@ -1,0 +1,15 @@
+::ng-deep .p-timeline-marker {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  box-shadow: var(--shadow-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+::ng-deep .p-timeline-content {
+  background-color: var(--surface-b);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  box-shadow: var(--shadow-1);
+}

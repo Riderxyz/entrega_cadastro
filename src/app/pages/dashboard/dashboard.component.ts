@@ -1,5 +1,10 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { GridApi, GridOptions, GridReadyEvent } from 'ag-grid-community';
+import {
+  GridApi,
+  GridOptions,
+  GridReadyEvent,
+  ICellRendererParams,
+} from 'ag-grid-community';
 import { Subject, takeUntil } from 'rxjs';
 import {
   EntregaInterface,
@@ -8,12 +13,13 @@ import {
 import { EntregaService } from 'src/app/service/entregas.service';
 import { AG_GRID_LOCALE_BR } from '@ag-grid-community/locale';
 import { ThemeService } from 'src/app/service/theme.service';
-//import { entregasMock } from 'src/app/interfaces/mock';
 import { StatusCardInterface } from 'src/app/interfaces/statusCard.interface';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/entrega-form.component';
 import { AgCellStatusForwardButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-statusforward-button/ag-cell-statusforward-button.component';
 import { AgCellHistoryButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-history-button/ag-cell-history-button.component';
+import { HistoricoEntregaComponent } from 'src/app/components/modals/historico-entrega/historico-entrega.component';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -21,25 +27,36 @@ import { AgCellHistoryButtonComponent } from 'src/app/components/ag-grid-buttons
   providers: [DialogService],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  private readonly entregaSrv: EntregaService = inject(EntregaService);
-  private dialogSrv = inject(DialogService);
   ref: DynamicDialogRef | undefined;
   gridOptions: GridOptions<EntregaInterface> = {
     localeText: AG_GRID_LOCALE_BR,
     columnDefs: [
       { field: 'id', headerName: 'Codigo Unico de Produto' },
-      { field: 'cliente', headerName: 'Cliente' },
+      { field: 'cliente', headerName: 'Cliente', maxWidth: 180 },
       { field: 'produto', headerName: 'Produto' },
-      { field: 'dataEstimadaEntrega', headerName: 'Data Estimada Entrega' },
-      { field: 'dataEnvio', headerName: 'Data Envio' },
-      { field: 'status', headerName: 'Status' },
+      {
+        field: 'dataEstimadaEntrega',
+        headerName: 'Data Estimada Entrega',
+        width: 130,
+        cellRenderer: (params: ICellRendererParams) => {
+          const date = params.value;
+          const formattedDate = date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          });
+          return formattedDate;
+        },
+      },
+      /* { field: 'dataEnvio', headerName: 'Data Envio' }, */
+      { field: 'status', headerName: 'Status', width: 100 },
       {
         headerName: 'Avançar',
         filter: false,
         sortable: false,
         editable: false,
         cellRenderer: AgCellStatusForwardButtonComponent,
+        width: 70,
         cellRendererParams: {
           moveStatusForward: (rowData: EntregaInterface) =>
             console.log(rowData),
@@ -51,9 +68,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         sortable: false,
         editable: false,
         cellRenderer: AgCellHistoryButtonComponent,
+        width: 70,
         cellRendererParams: {
           onHistory: (rowData: EntregaInterface) =>
-            console.log(rowData),
+            this.onHistoryRequest(rowData),
         },
       },
     ],
@@ -67,7 +85,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
   gridApi!: GridApi<EntregaInterface>;
   showGridInDarkMode = false;
+  private readonly destroy$ = new Subject<void>();
+  private readonly entregaSrv: EntregaService = inject(EntregaService);
+  private readonly dialogSrv = inject(DialogService);
   private readonly themeSrv: ThemeService = inject(ThemeService);
+  private readonly router: Router = inject(Router);
   statusCards: StatusCardInterface[] = [];
   entregasParaHoje: EntregaInterface[] = [];
   constructor() {}
@@ -173,5 +195,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       data: {}, // sem entrega → inclusão
     });
   }
-  ngOnDestroy(): void {}
+
+  onHistoryRequest(param: EntregaInterface) {
+    this.entregaSrv.getAllHistoricoEntrega(param.id).subscribe({
+      next: (res) => {
+        console.log('historico', res);
+        this.ref = this.dialogSrv.open(HistoricoEntregaComponent, {
+          header: 'Historico de Entregas',
+          width: '70%',
+          modal: true,
+          closeOnEscape: true,
+          data: { historico: res, entrega: param },
+        });
+      },
+    });
+  }
+
+  goToEntregaList() {
+    this.router.navigateByUrl('/entregasList');
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

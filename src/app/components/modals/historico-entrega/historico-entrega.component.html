@@ -1,1 +1,50 @@
-<p>historico-entrega works!</p>
+<div class="grid">
+  <div class="col-12">
+    <p-card
+      [header]="entregaSelecionada.produto"
+      subheader="Atualizado por ultimo em {{
+        entregaSelecionada.updatedAt | date : 'short'
+      }}"
+    >
+      <p>Pacote destinado para: {{ entregaSelecionada.cliente }}</p>
+      <p><strong>Observacoes:</strong> {{ entregaSelecionada.observacoes }}</p>
+    </p-card>
+  </div>
+  <div class="col-12">
+    <p-timeline [value]="historico" layout="vertical" align="alternate">
+      <ng-template pTemplate="marker" let-item>
+        <span
+          class="p-timeline-marker"
+          [ngStyle]="{ 'background-color': getMarkerColor(item.status) }"
+        >
+          <i class="fa-solid fa-box-archive"></i>
+        </span>
+      </ng-template>
+      <ng-template pTemplate="content" let-item>
+        <div class="p-timeline-content">
+          <p-card
+            [header]="item.status"
+            subheader="{{ item.date | date : 'short' }}"
+            [style]="{ 'background-color': getMarkerColor(item.status) }"
+          >
+            <p *ngIf="item.observacoes">{{ item.observacoes }}</p>
+          </p-card>
+        </div>
+      </ng-template>
+    </p-timeline>
+  </div>
+  <div class="col-12">
+    <p-button
+      label="Fechar"
+      severity="danger"
+      styleClass="w-full"
+      [outlined]="true"
+      (click)="close()"
+    ></p-button>
+  </div>
+</div>
+
+<!-- <div class="p-d-flex p-jc-end p-mt-3">
+  <button pButton type="button" label="Fechar" (click)="close()"></button>
+</div>
+ -->

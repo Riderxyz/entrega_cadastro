@@ -25,6 +25,8 @@ export class EntregaService {
 
   private readonly entregaConverter = this.utilSrv.genericConverter<EntregaInterface>([
     'dataEstimadaEntrega',
+    'createdAt',
+    'updatedAt',
     'dataEnvio',
   ]);
 
