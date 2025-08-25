@@ -6,7 +6,7 @@ export interface EntregaInterface {
     */
   id: string;
   cliente: string;
-  dataEnvio: Date;
+  dataEnvio?: Date;
   status: EntregaStatus;
   endereco: EnderecoInterface;
   enderecoFormatado: string;
@@ -16,13 +16,14 @@ export interface EntregaInterface {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
+  updatedBy: string;
   arquivado: boolean;
 }
 
 export const getEmptyEntrega = (): EntregaInterface => ({
   id: '',
   cliente: '',
-  dataEnvio: new Date(),
+  //dataEnvio: new Date(),
   status: EntregaStatus.Pendente,
   endereco: getEmptyEndereco(),
   enderecoFormatado: '',
@@ -31,6 +32,7 @@ export const getEmptyEntrega = (): EntregaInterface => ({
   updatedAt: new Date(),
   createdAt: new Date(),
   createdBy: '',
+  updatedBy: '',
   observacoes: '',
   arquivado: false,
   //  historico: [],

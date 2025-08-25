@@ -9,6 +9,9 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  limit,
+  orderBy,
+  query,
 } from '@angular/fire/firestore';
 import { config } from './config';
 import { UtilService } from './util.service';
@@ -64,6 +67,17 @@ export class EntregaService {
     return collectionData(collectionRef, { idField: 'id' });
   }
 
+    getUltimas5Entregas() {
+    const collectionRef = collection(
+      this.firestoreCtrl,
+      config.firebaseCollectionKeys.entregas
+    ).withConverter(this.entregaConverter);
+
+    const q = query(collectionRef, orderBy('createdAt', 'desc'), limit(5));
+
+    return collectionData(q, { idField: 'id' });
+  }
+
   listenToEntregaById(id: string) {
     return docSnapshots(this.entregaDocRef(id));
   }
@@ -79,6 +93,8 @@ export class EntregaService {
   updateEntrega(entrega: EntregaInterface) {
     return setDoc(this.entregaDocRef(entrega.id), entrega, { merge: true });
   }
+
+
 
   archiveEntrega(id: string) {
     return updateDoc(this.entregaDocRef(id), { arquivado: true });

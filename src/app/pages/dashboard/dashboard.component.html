@@ -13,7 +13,9 @@
           </h3>
 
           <ng-template #noEntregas>
-            <div class="flex flex-column align-items-center justify-content-center'">
+            <div
+              class="flex flex-column align-items-center justify-content-center'"
+            >
               <i class="pi pi-inbox"></i>
               <h3>Não há entregas para hoje</h3>
             </div>
@@ -21,22 +23,32 @@
         </div>
       </p-panel>
     </div>
-        <div class="col-12 lg:col-6">
-      <p-card styleClass="add-entrega-card" (click)="addNewEntrega()" (keydown)="addNewEntrega()">
+    <div class="col-12 lg:col-6">
+      <p-card
+        styleClass="add-entrega-card"
+        (click)="addNewEntrega()"
+        (keydown)="addNewEntrega()"
+      >
         <div class="flex align-items-center justify-content-center">
-            <div class="flex flex-column align-items-center justify-content-center ">
-              <i class="fa-solid fa-2x fa-plus"></i>
-              <h3>Clique aqui para cadastrar uma nova entrega</h3>
-            </div>
+          <div
+            class="flex flex-column align-items-center justify-content-center"
+          >
+            <i class="fa-solid fa-2x fa-plus"></i>
+            <h3>Clique aqui para cadastrar uma nova entrega</h3>
+          </div>
         </div>
       </p-card>
     </div>
+    <div class="col-12">
+      <p-panel header="Ultimas 5 entregas criadas">
+        <ag-grid-angular
+          [gridOptions]="gridOptions"
+          [class.ag-theme-material-dark]="showGridInDarkMode"
+          [class.ag-theme-material]="!showGridInDarkMode"
+          style="width: 100%; height: 35vh"
+        >
+        </ag-grid-angular>
+      </p-panel>
+    </div>
   </div>
-  <ag-grid-angular
-    [gridOptions]="gridOptions"
-    [class.ag-theme-material-dark]="showGridInDarkMode"
-    [class.ag-theme-material]="!showGridInDarkMode"
-    style="width: 100%; height: 60vh"
-  >
-  </ag-grid-angular>
 </p-scrollPanel>

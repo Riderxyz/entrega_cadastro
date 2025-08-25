@@ -8,10 +8,11 @@ import {
 import { EntregaService } from 'src/app/service/entregas.service';
 import { AG_GRID_LOCALE_BR } from '@ag-grid-community/locale';
 import { ThemeService } from 'src/app/service/theme.service';
-import { entregasMock } from 'src/app/interfaces/mock';
+//import { entregasMock } from 'src/app/interfaces/mock';
 import { StatusCardInterface } from 'src/app/interfaces/statusCard.interface';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/entrega-form.component';
+import { AgCellStatusForwardButtonComponent } from 'src/app/components/ag-cell-statusforward-button/ag-cell-statusforward-button.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -26,10 +27,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   gridOptions: GridOptions<EntregaInterface> = {
     localeText: AG_GRID_LOCALE_BR,
     columnDefs: [
-      { field: 'id', headerName: 'ID' },
-      { field: 'dataEnvio', headerName: 'Data Envio' },
+      { field: 'id', headerName: 'Codigo Unico de Produto' },
+      { field: 'cliente', headerName: 'Cliente' },
+      { field: 'produto', headerName: 'Produto' },
       { field: 'dataEstimadaEntrega', headerName: 'Data Estimada Entrega' },
+      { field: 'dataEnvio', headerName: 'Data Envio' },
       { field: 'status', headerName: 'Status' },
+      {
+         headerName: 'Avançar',
+      cellRenderer: AgCellStatusForwardButtonComponent,
+      cellRendererParams: {
+        moveStatusForward: (
+          rowData: EntregaInterface
+        ) => console.log(rowData)
+        ,
+      },
+    },
     ],
     defaultColDef: {
       editable: false,
@@ -56,7 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   onGridReady(params: GridReadyEvent): void {
     this.gridApi = params.api;
     this.entregaSrv
-      .getAllEntregas()
+      .getUltimas5Entregas()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
@@ -130,7 +143,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getEntregasParaHoje(entregasArr: EntregaInterface[]) {
     const today = new Date();
     const entregasParaHoje = entregasArr.filter((entrega) => {
-      const entregaDate = new Date(entrega.dataEnvio);
+      const entregaDate = new Date(entrega.dataEstimadaEntrega);
       return (
         entregaDate.getDate() === today.getDate() &&
         entregaDate.getMonth() === today.getMonth() &&

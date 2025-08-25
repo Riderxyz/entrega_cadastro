@@ -1,3 +1,5 @@
+import { RegiaoBrasilNomeEnum, UfSigla } from "./regioesBrasil.interface";
+
 export interface EnderecoInterface {
   cep: string;
   logradouro: string;
@@ -5,10 +7,10 @@ export interface EnderecoInterface {
   unidade: string;
   bairro: string;
   localidade: string;
-  uf: string;
+  uf: UfSigla;
   numero: string;
   estado: string;
-  regiao: string;
+  regiao: RegiaoBrasilNomeEnum;
   ibge: string;
   gia: string;
   ddd: string;
@@ -23,9 +25,9 @@ export const getEmptyEndereco = (): EnderecoInterface => ({
   numero: '',
   bairro: '',
   localidade: '',
-  uf: '',
+  uf: '' as UfSigla,
   estado: '',
-  regiao: '',
+  regiao: '' as RegiaoBrasilNomeEnum,
   ibge: '',
   gia: '',
   ddd: '',
