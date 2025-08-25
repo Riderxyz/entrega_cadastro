@@ -19,7 +19,15 @@ const routes: Routes = [
       import('./pages/dashboard/dashboard.module').then(
         (m) => m.DashboardModule
       ),
-        canActivate: [authGuard],
+    canActivate: [authGuard],
+  },
+  {
+    path: 'entregasList',
+    loadChildren: () =>
+      import('./pages/entregas-list/entregas-list.module').then(
+        (m) => m.EntregasListModule
+      ),
+      canActivate: [authGuard],
   },
 ];
 
