@@ -350,7 +350,6 @@ export class EntregasListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private executeArchive(): void {}
 
   private exportToExcel(): void {
     const exportSelected = this.selectedRows.length > 0;
