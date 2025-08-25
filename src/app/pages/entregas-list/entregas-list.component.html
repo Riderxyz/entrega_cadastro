@@ -9,21 +9,23 @@
           <span class="p-inputgroup-addon">
             <i class="fa-solid fa-magnifying-glass"></i>
           </span>
-          <input pInputText
-          [(ngModel)]="filtro"
-          (ngModelChange)="gridApi.onFilterChanged()"
-          placeholder="Procure aqui pela Entrega." />
+          <input
+            pInputText
+            [(ngModel)]="filtro"
+            (ngModelChange)="gridApi.onFilterChanged()"
+            placeholder="Procure aqui pela Entrega."
+          />
         </div>
         <div class="flex gap-3">
-          <p-button *ngFor="let item of crudGridBtnArr"
+          <p-button
+            *ngFor="let item of crudGridBtnArr; let i = index ;trackBy: trackByFn"
             [icon]="item.icon"
             tooltipPosition="bottom"
             [pTooltip]="item.pTooltip"
             [severity]="item.severity"
             [disabled]="item.disabled"
-            (click)="item.onClick()"
+            (onClick)="handleButtonClick(i)"
           ></p-button>
-
         </div>
       </div>
     </ng-template>

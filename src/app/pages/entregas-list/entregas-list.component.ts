@@ -7,6 +7,7 @@ import {
   GridApi,
   GridReadyEvent,
   ColDef,
+  ColGroupDef,
 } from 'ag-grid-community';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject, takeUntil } from 'rxjs';
@@ -41,55 +42,73 @@ export class EntregasListComponent implements OnInit, OnDestroy {
   ref: DynamicDialogRef | undefined;
 
   /** Definição de colunas */
-  private columnDefs: ColDef<EntregaInterface>[] = [
+  private columnDefs: (
+    | ColDef<EntregaInterface, any>
+    | ColGroupDef<EntregaInterface>
+  )[] = [
     {
-      field: 'id',
-      headerName: 'Código Único de Produto',
-      checkboxSelection: true,
+      filter: false,
       headerCheckboxSelection: true,
-    },
-    { field: 'cliente', headerName: 'Cliente', maxWidth: 180 },
-    { field: 'produto', headerName: 'Produto' },
-    {
-      field: 'dataEstimadaEntrega',
-      headerName: 'Data Estimada Entrega',
-      width: 130,
-      valueFormatter: (params) =>
-        new Date(params.value).toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }),
-    },
-    { field: 'status', headerName: 'Status', width: 100 },
-    {
-      headerName: 'Avançar',
-      cellRenderer: AgCellStatusForwardButtonComponent,
-      width: 70,
-      cellRendererParams: {
-        moveStatusForward: (rowData: EntregaInterface) => console.log(rowData),
-      },
+      checkboxSelection: true,
+      width: 50,
+      suppressSizeToFit: true,
     },
     {
-      headerName: 'Histórico',
-      cellRenderer: AgCellHistoryButtonComponent,
-      width: 70,
-      cellRendererParams: {
-        onHistory: (rowData: EntregaInterface) => {
-          this.selectedRows = [rowData];
-          this.onHistoryRequest();
+      headerName: 'Dados da Entrega',
+      children: [
+        {
+          field: 'id',
+          headerName: 'Código Único de Produto',
         },
-      },
+        { field: 'cliente', headerName: 'Cliente', maxWidth: 180 },
+        { field: 'produto', headerName: 'Produto' },
+        {
+          field: 'dataEstimadaEntrega',
+          headerName: 'Data Estimada Entrega',
+          width: 130,
+          valueFormatter: (params) =>
+            new Date(params.value).toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            }),
+        },
+        { field: 'status', headerName: 'Status', width: 100 },
+      ],
     },
-   {
-      headerName: 'Arquivar',
-      cellRenderer: AgCellArchiveButtonComponent,
-      width: 70,
-      cellRendererParams: {
-        onHistory: (rowData: EntregaInterface) => {
+    {
+      headerName: 'Ações',
 
+      children: [
+        {
+          headerName: 'Avançar',
+          cellRenderer: AgCellStatusForwardButtonComponent,
+          width: 70,
+          cellRendererParams: {
+            moveStatusForward: (rowData: EntregaInterface) =>
+              console.log(rowData),
+          },
         },
-      },
+        {
+          headerName: 'Histórico',
+          cellRenderer: AgCellHistoryButtonComponent,
+          width: 70,
+          cellRendererParams: {
+            onHistory: (rowData: EntregaInterface) => {
+              this.selectedRows = [rowData];
+              this.onHistoryRequest();
+            },
+          },
+        },
+        {
+          headerName: 'Arquivar',
+          cellRenderer: AgCellArchiveButtonComponent,
+          width: 70,
+          cellRendererParams: {
+            onHistory: (rowData: EntregaInterface) => {},
+          },
+        },
+      ],
     },
   ];
 
@@ -141,35 +160,30 @@ export class EntregasListComponent implements OnInit, OnDestroy {
         pTooltip: 'Incluir nova entrega',
         severity: 'success',
         disabled: false,
-        onClick:() => this.addNewEntrega()
       },
       {
         icon: 'fa-solid fa-pen-to-square',
         pTooltip: 'Editar entrega',
         severity: 'warning',
         disabled: this.selectedRows.length !== 1,
-        onClick:() => this.editNewEntrega()
       },
       {
         icon: 'fa-solid fa-folder-open',
         pTooltip: 'Abrir Histórico de entrega',
         severity: 'info',
         disabled: this.selectedRows.length !== 1,
-        onClick:() => this.onHistoryRequest()
       },
       {
         icon: 'fa-solid fa-box-archive',
         pTooltip: 'Arquivar entrega',
         severity: 'secondary',
         disabled: this.selectedRows.length === 0,
-        onClick:() => this.onArchiveRequest()
       },
       {
         icon: 'fa-solid fa-trash-can',
         pTooltip: 'Excluir entrega',
         severity: 'danger',
         disabled: this.selectedRows.length === 0,
-        onClick:() => this.onDeleteRequest()
       },
     ];
   }
@@ -243,12 +257,38 @@ export class EntregasListComponent implements OnInit, OnDestroy {
 
   onDeleteRequest() {
     console.log('Excluir entrega:', this.selectedRows[0]);
-   // this.exportSrv.exportGridToExcel(this.gridApi, false, 'teste')
+    this.exportSrv.exportGridToExcel(this.gridApi, false, 'teste');
     /* this.dialogSrv.open(EntregaFormComponent, {
       header: 'Excluir Entrega',
       width: '70%',
       data: { entrega: this.selectedRows[0] },
     }); */
+  }
+
+  trackByFn(index: number, item: any) {
+    return index;
+  }
+
+  handleButtonClick(index: number) {
+    console.log(index);
+
+    switch (index) {
+      case 0:
+        this.addNewEntrega();
+        break;
+      case 1:
+        this.editNewEntrega();
+        break;
+      case 2:
+        this.onHistoryRequest();
+        break;
+      case 3:
+        this.onArchiveRequest();
+        break;
+      case 4:
+        this.onDeleteRequest();
+        break;
+    }
   }
 
   ngOnDestroy(): void {
