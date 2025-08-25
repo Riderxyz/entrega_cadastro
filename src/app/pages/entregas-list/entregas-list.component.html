@@ -1,1 +1,37 @@
-<h1>Lista de Entregas</h1>
+<div class="px-1">
+  <h1>Lista de Entregas</h1>
+  <p-panel>
+    <ng-template pTemplate="header">
+      <!-- <span class="text-primary font-semibold text-xl"
+        >Header</span -->
+      <div class="flex w-full gap-3">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input pInputText placeholder="Procure aqui pela Entrega." />
+        </div>
+        <div class="flex gap-3">
+          <p-button *ngFor="let item of crudGridBtnArr"
+            [icon]="item.icon"
+            tooltipPosition="bottom"
+            [pTooltip]="item.pTooltip"
+            [severity]="item.severity"
+            [disabled]="item.disabled"
+            (click)="item.onClick()"
+          ></p-button>
+
+        </div>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="icons"> </ng-template>
+    <ag-grid-angular
+      [gridOptions]="gridOptions"
+      [class.ag-theme-material-dark]="showGridInDarkMode"
+      [class.ag-theme-material]="!showGridInDarkMode"
+      style="width: 100%; height: 55vh"
+    >
+    </ag-grid-angular>
+  </p-panel>
+</div>

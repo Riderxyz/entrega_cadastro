@@ -11,6 +11,15 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+
+const primeNgModules = [
+     CardModule,
+    ButtonModule,
+    InputTextModule,
+    ScrollPanelModule,
+    TooltipModule,
+    PanelModule,
+]
 @NgModule({
   declarations: [
     DashboardComponent,
@@ -18,12 +27,7 @@ import { TooltipModule } from 'primeng/tooltip';
   ],
   imports: [
     CommonModule,
-    CardModule,
-    ButtonModule,
-    InputTextModule,
-    ScrollPanelModule,
-    TooltipModule,
-    PanelModule,
+...primeNgModules,
     DashboardRoutingModule,
     AgGridModule
   ]

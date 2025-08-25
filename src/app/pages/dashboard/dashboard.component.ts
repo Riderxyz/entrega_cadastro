@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   entregasParaHoje: EntregaInterface[] = [];
   constructor() {}
   ngOnInit(): void {
+    this.showGridInDarkMode = this.themeSrv.getCurrentTheme() === 'dark'
     this.themeSrv.$onThemeChange
       .pipe(takeUntil(this.destroy$))
       .subscribe((theme) => {
@@ -189,7 +190,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   addNewEntrega() {
-    this.ref = this.dialogSrv.open(EntregaFormComponent, {
+    const ref = this.dialogSrv.open(EntregaFormComponent, {
       header: 'Nova Entrega',
       width: '70%',
       data: {}, // sem entrega → inclusão
@@ -200,7 +201,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.entregaSrv.getAllHistoricoEntrega(param.id).subscribe({
       next: (res) => {
         console.log('historico', res);
-        this.ref = this.dialogSrv.open(HistoricoEntregaComponent, {
+        const ref = this.dialogSrv.open(HistoricoEntregaComponent, {
           header: 'Historico de Entregas',
           width: '70%',
           modal: true,
