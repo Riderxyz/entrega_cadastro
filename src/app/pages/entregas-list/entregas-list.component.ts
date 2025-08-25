@@ -17,6 +17,7 @@ import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/ent
 import { HistoricoEntregaComponent } from 'src/app/components/modals/historico-entrega/historico-entrega.component';
 import { EntregaInterface } from 'src/app/interfaces/entrega.interface';
 import { EntregaService } from 'src/app/service/entregas.service';
+import { ExportService } from 'src/app/service/export.service';
 import { ThemeService } from 'src/app/service/theme.service';
 
 @Component({
@@ -31,6 +32,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
   private readonly dialogSrv = inject(DialogService);
   private readonly themeSrv = inject(ThemeService);
   private readonly router = inject(Router);
+  private readonly exportSrv: ExportService = inject(ExportService); // ExportService
 
   gridApi!: GridApi<EntregaInterface>;
   selectedRows: EntregaInterface[] = [];
@@ -85,7 +87,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
       width: 70,
       cellRendererParams: {
         onHistory: (rowData: EntregaInterface) => {
-        
+
         },
       },
     },
@@ -139,35 +141,35 @@ export class EntregasListComponent implements OnInit, OnDestroy {
         pTooltip: 'Incluir nova entrega',
         severity: 'success',
         disabled: false,
-        onClick: this.addNewEntrega.bind(this),
+        onClick:() => this.addNewEntrega()
       },
       {
         icon: 'fa-solid fa-pen-to-square',
         pTooltip: 'Editar entrega',
         severity: 'warning',
         disabled: this.selectedRows.length !== 1,
-        onClick: this.editNewEntrega.bind(this),
+        onClick:() => this.editNewEntrega()
       },
       {
         icon: 'fa-solid fa-folder-open',
         pTooltip: 'Abrir Histórico de entrega',
         severity: 'info',
         disabled: this.selectedRows.length !== 1,
-        onClick: this.onHistoryRequest.bind(this),
+        onClick:() => this.onHistoryRequest()
       },
       {
         icon: 'fa-solid fa-box-archive',
         pTooltip: 'Arquivar entrega',
         severity: 'secondary',
         disabled: this.selectedRows.length === 0,
-        onClick: this.onArchiveRequest.bind(this),
+        onClick:() => this.onArchiveRequest()
       },
       {
         icon: 'fa-solid fa-trash-can',
         pTooltip: 'Excluir entrega',
         severity: 'danger',
         disabled: this.selectedRows.length === 0,
-        onClick: this.onDeleteRequest.bind(this),
+        onClick:() => this.onDeleteRequest()
       },
     ];
   }
@@ -241,6 +243,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
 
   onDeleteRequest() {
     console.log('Excluir entrega:', this.selectedRows[0]);
+   // this.exportSrv.exportGridToExcel(this.gridApi, false, 'teste')
     /* this.dialogSrv.open(EntregaFormComponent, {
       header: 'Excluir Entrega',
       width: '70%',

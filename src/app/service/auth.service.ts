@@ -115,7 +115,6 @@ export class AuthService {
         );
       }),
       tap(() => {
-        debugger;
         this.router.navigateByUrl('/dashboard');
       })
     );
