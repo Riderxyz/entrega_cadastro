@@ -34,7 +34,7 @@
 
       </div>
 
-      <div class="field col-12 md:col-4">
+      <div class="field col-12 md:col-4" *ngIf="entregaObject.status === EntregaStatus.Entregue">
         <label for="dataEnvio">Data de Envio *</label>
         <p-calendar
           inputId="dataEnvio"
@@ -44,13 +44,13 @@
           [required]="true"
           [showIcon]="true"
           dateFormat="dd/mm/yy"
-          [minDate]="minEnvio"
-          [maxDate]="maxEnvio">
+          styleClass="w-full">
         </p-calendar>
 
       </div>
 
-      <div class="field col-12 md:col-4">
+      <div class="field col-12" [class.md:col-6]="entregaObject.status !== EntregaStatus.Entregue"
+      [class.md:col-4] = "entregaObject.status === EntregaStatus.Entregue">
         <label for="dataEstimadaEntrega">Estimativa de Entrega *</label>
         <p-calendar
           inputId="dataEstimadaEntrega"
@@ -60,11 +60,13 @@
           [required] = "true"
           [showIcon]="true"
           dateFormat="dd/mm/yy"
-          [minDate]="minEntrega">
+          [minDate]="minEntrega"
+          styleClass="w-full">
         </p-calendar>
       </div>
 
-      <div class="field col-12 md:col-4">
+      <div class="field col-12" [class.md:col-6]="entregaObject.status !== EntregaStatus.Entregue"
+      [class.md:col-4] = "entregaObject.status === EntregaStatus.Entregue">
         <label for="status">Status *</label>
         <p-dropdown
           inputId="status"
@@ -75,7 +77,8 @@
           [(ngModel)]="entregaObject.status"
           #status="ngModel"
           [required]="true"
-          placeholder="Selecione">
+          placeholder="Selecione"
+          styleClass="w-full">
         </p-dropdown>
       </div>
 
@@ -88,7 +91,9 @@
           [(ngModel)]="entregaObject.observacoes"
           rows="3"
           [autoResize]="true"
-          placeholder="Notas adicionais..."></textarea>
+          placeholder="Notas adicionais..."
+          styleClass="w-full"
+          class="w-full"></textarea>
       </div>
 
       <!-- Endereço -->
@@ -148,7 +153,7 @@
             placeholder="Bairro" />
         </div>
 
-        <div class="field col-12 md:col-4">
+        <div class="field col-12 md:col-6">
           <label for="localidade">Cidade *</label>
           <input
             pInputText
@@ -161,22 +166,47 @@
 
         </div>
 
-        <div class="field col-12 md:col-2">
-          <label for="uf">UF *</label>
-          <p-dropdown
-            inputId="uf"
-            name="uf"
-            [options]="ufOptions"
-            optionLabel="label"
-            optionValue="value"
-            [(ngModel)]="entregaObject.endereco.uf"
-            #uf="ngModel"
-            [required]="true"
-            placeholder="UF">
-          </p-dropdown>
-        </div>
+<div class="field col-12 md:col-4">
+  <label for="regiao">Região *</label>
+  <p-dropdown
+    inputId="regiao"
+    name="regiao"
+    [options]="regioesOptions"
+    [(ngModel)]="entregaObject.endereco.regiao"
+    (onChange)="onChangeRegiao($event.value)"
+    placeholder="Selecione a Região"
+    styleClass="w-full">
+  </p-dropdown>
+</div>
 
-        <div class="field col-12 md:col-6">
+<!-- Dropdown UF -->
+<div class="field col-12 md:col-4">
+  <label for="uf">UF *</label>
+  <p-dropdown
+    inputId="uf"
+    name="uf"
+    [options]="ufOptions"
+    [(ngModel)]="entregaObject.endereco.uf"
+    (onChange)="onChangeUf($event.value)"
+    placeholder="Selecione a UF"
+    [disabled]="!entregaObject.endereco.regiao"
+    styleClass="w-full">
+  </p-dropdown>
+</div>
+
+<!-- Campo Estado (nome completo, preenchido automático) -->
+<div class="field col-12 md:col-4">
+  <label for="estado">Estado</label>
+  <input
+    pInputText
+    id="estado"
+    name="estado"
+    [(ngModel)]="entregaObject.endereco.estado"
+    [readonly]="true"
+    style="background-color: #f9f9f9" />
+</div>
+
+       <div class="field col-12 md:col-12">
           <label for="complemento">Complemento</label>
           <input
             pInputText
@@ -186,71 +216,7 @@
             placeholder="Apto, bloco, referência..." />
         </div>
 
-        <div class="field col-12 md:col-6">
-          <label for="logradouro-unidade">Unidade</label>
-          <input
-            pInputText
-            id="logradouro-unidade"
-            name="unidade"
-            [(ngModel)]="entregaObject.endereco.unidade"
-            placeholder="Unidade" />
-        </div>
-
-        <!-- Campos adicionais do seu modelo (opcionais no form) -->
-        <div class="field col-12 md:col-3">
-          <label for="estado">Estado (nome)</label>
-          <input pInputText id="estado" name="estado" [(ngModel)]="entregaObject.endereco.estado" />
-        </div>
-        <div class="field col-12 md:col-3">
-          <label for="regiao">Região</label>
-          <input pInputText id="regiao" name="regiao" [(ngModel)]="entregaObject.endereco.regiao" />
-        </div>
-        <div class="field col-12 md:col-3">
-          <label for="ddd">DDD</label>
-          <input pInputText id="ddd" name="ddd" [(ngModel)]="entregaObject.endereco.ddd" />
-        </div>
-        <div class="field col-12 md:col-3">
-          <label for="ibge">IBGE</label>
-          <input pInputText id="ibge" name="ibge" [(ngModel)]="entregaObject.endereco.ibge" />
-        </div>
-        <div class="field col-12 md:col-3">
-          <label for="gia">GIA</label>
-          <input pInputText id="gia" name="gia" [(ngModel)]="entregaObject.endereco.gia" />
-        </div>
-        <div class="field col-12 md:col-3">
-          <label for="siafi">SIAFI</label>
-          <input pInputText id="siafi" name="siafi" [(ngModel)]="entregaObject.endereco.siafi" />
-        </div>
       </div>
-
-      <!-- Metadados -->
-      <div class="col-12">
-        <h3 class="m-0">Metadados</h3>
-        <p-divider></p-divider>
-      </div>
-
-      <div class="field col-12 md:col-4">
-        <label for="createdBy">Criado por *</label>
-        <input
-          pInputText
-          id="createdBy"
-          name="createdBy"
-          required
-          [(ngModel)]="entregaObject.createdBy"
-          #createdBy="ngModel"
-          placeholder="Usuário responsável" />
-
-      </div>
-
-      <div class="field-checkbox col-12 md:col-4 flex align-items-end">
-        <p-checkbox
-          inputId="arquivado"
-          name="arquivado"
-          [(ngModel)]="entregaObject.arquivado"
-          [binary]="true"></p-checkbox>
-        <label for="arquivado" class="ml-2">Arquivado</label>
-      </div>
-
       <!-- Ações -->
       <div class="col-12 flex gap-2 justify-content-end">
         <button pButton type="button" label="Limpar" class="p-button-secondary"
