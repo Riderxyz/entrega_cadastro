@@ -1,7 +1,7 @@
 {
-  "name": "entrega-dashboard",
-  "short_name": "entrega-dashboard",
-  "theme_color": "#1976d2",
+  "name": "WkTecnology - Entrega dashboard",
+  "short_name": "WkTecnology_Dashboard",
+  "theme_color": "#fe1515",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",
