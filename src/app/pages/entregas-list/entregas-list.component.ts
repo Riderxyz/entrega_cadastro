@@ -26,6 +26,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { EntregaService } from 'src/app/service/entregas.service';
 import { ExportService } from 'src/app/service/export.service';
 import { ThemeService } from 'src/app/service/theme.service';
+import { ToastService } from 'src/app/service/toast.service';
 import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-entregas-list',
@@ -39,6 +40,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
   private readonly dialogSrv = inject(DialogService);
   private readonly themeSrv = inject(ThemeService);
   private readonly authSrv = inject(AuthService);
+  private readonly toastSrv = inject(ToastService);
   private readonly confirmationDialogSrv: ConfirmationService =
     inject(ConfirmationService);
   private readonly exportSrv: ExportService = inject(ExportService); // ExportService
@@ -147,25 +149,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
       console.log('Selecionadas:', this.selectedRows);
     },
     isExternalFilterPresent: () => this.filtro !== '',
-    doesExternalFilterPass: ({ data }) => {
-      if (!data) return false;
-      const term = this.filtro.toLowerCase();
-      return [
-        data.cliente,
-        data.produto,
-        data.status,
-        data.id,
-        data.createdBy,
-        data.updatedBy,
-        data.observacoes,
-        data.createdAt?.toISOString(),
-        data.updatedAt?.toISOString(),
-        data.dataEstimadaEntrega?.toISOString(),
-        data.dataEnvio?.toISOString(),
-      ]
-        .filter(Boolean)
-        .some((field) => field!.toLowerCase().includes(term));
-    },
+    doesExternalFilterPass: this.externalFilterPass.bind(this),
   };
 
   /** Botões da toolbar (reagem à seleção) */
@@ -231,16 +215,7 @@ export class EntregasListComponent implements OnInit, OnDestroy {
       .getAllEntregas()
       .pipe(
         takeUntil(this.destroy$),
-        map((res) => {
-          const retorno: EntregaInterface[] = [];
-          res.forEach((entrega) => {
-            if (!entrega.arquivado) {
-              console.log('n sou arquivado', entrega);
-              retorno.push(entrega);
-            }
-          });
-          return retorno;
-        })
+        map((entregas) => entregas.filter((entrega) => !entrega.arquivado))
       )
       .subscribe({
         next: (res) => {
@@ -249,6 +224,26 @@ export class EntregasListComponent implements OnInit, OnDestroy {
         },
         error: () => {},
       });
+  }
+
+  private externalFilterPass(node: any): boolean {
+    if (!node.data) return false;
+
+    const term = this.filtro.toLowerCase().trim();
+    if (!term) return true;
+
+    const searchableFields = [
+      node.data.cliente,
+      node.data.produto,
+      node.data.status,
+      node.data.id,
+      node.data.createdBy,
+      node.data.updatedBy,
+      node.data.observacoes,
+    ].filter(Boolean);
+
+    // Busca otimizada - para na primeira ocorrência
+    return searchableFields.some((field) => field.toLowerCase().includes(term));
   }
 
   addNewEntrega() {
@@ -293,39 +288,77 @@ export class EntregasListComponent implements OnInit, OnDestroy {
       acceptLabel: 'Sim',
       rejectLabel: 'Não',
       accept: () => {
+        const archiveOperations = this.selectedRows.map((entrega) => {
+          const historicoData = {
+            status: EntregaStatus.Arquivada,
+            date: new Date(),
+            id: uuidv4(),
+            observacoes: `Arquivado por ${
+              this.authSrv.currentUser?.displayName || 'Sistema'
+            }`,
+          };
+
+          return this.entregaSrv.archiveEntrega(entrega).then(() => {
+            return this.entregaSrv.addHistoricoEntrega(
+              entrega.id,
+              historicoData
+            );
+          });
+        });
+
+        Promise.all(archiveOperations)
+          .then(() => {
+            this.selectedRows = [];
+          })
+          .catch((error) => {
+            console.error('Erro ao arquivar entregas:', error);
+          })
+          .finally(() => {
+            this.toastSrv.notify(
+              'success',
+              'Entregas arquivadas com sucesso',
+              '',
+              5000
+            );
+          });
+      },
+      reject: () => {
+        console.log('não foi');
+      },
+    });
+  }
+
+  onDeleteRequest() {
+    console.log('Excluir entrega:', this.selectedRows[0]);
+    this.confirmationDialogSrv.confirm({
+      message:
+        this.selectedRows.length === 1
+          ? 'Tem certeza que deseja excluir esta entrega ?'
+          : 'Tem certeza que deseja excluir estas entregas ?',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      accept: () => {
         console.log('foi');
         this.selectedRows.forEach((entrega) => {
-          this.entregaSrv.archiveEntrega(entrega).then((res) => {
-            this.entregaSrv.addHistoricoEntrega(entrega.id, {
-              status: EntregaStatus.Arquivada,
-              date: new Date(),
-              id: uuidv4(),
-              observacoes:
-                'arquivado por ' + this.authSrv.currentUser?.displayName,
-            });
-          });
+          this.entregaSrv.deleteEntrega(entrega.id).then((res) => {});
         });
       },
       reject: () => {
         console.log('não foi');
       },
     });
-
-    /* this.dialogSrv.open(EntregaFormComponent, {
-      header: 'Arquivar Entrega',
-      width: '70%',
-      data: { entrega: this.selectedRows[0] },
-    }); */
   }
 
-  onDeleteRequest() {
-    console.log('Excluir entrega:', this.selectedRows[0]);
-    this.exportSrv.exportGridToExcel(this.gridApi, false, 'teste');
-    /* this.dialogSrv.open(EntregaFormComponent, {
-      header: 'Excluir Entrega',
-      width: '70%',
-      data: { entrega: this.selectedRows[0] },
-    }); */
+  private executeArchive(): void {}
+
+  private exportToExcel(): void {
+    const exportSelected = this.selectedRows.length > 0;
+    const filename = `Lista_de_Entregas_${
+      new Date().toISOString().split('T')[0]
+    }`;
+
+    this.exportSrv.exportGridToExcel(this.gridApi, exportSelected, filename);
   }
 
   trackByFn(index: number, item: any) {
@@ -335,33 +368,20 @@ export class EntregasListComponent implements OnInit, OnDestroy {
   handleButtonClick(index: number) {
     console.log(index);
 
-    switch (index) {
-      case 0:
-        const exportarTudo = this.selectedRows.length !== 0;
-        this.exportSrv.exportGridToExcel(
-          this.gridApi,
-          exportarTudo,
-          'Lista de Entregas'
-        );
-        break;
-      case 1:
-        this.addNewEntrega();
-        break;
-      case 2:
-        this.editNewEntrega();
-        break;
-      case 3:
-        this.onHistoryRequest();
-        break;
-      case 4:
-        this.onArchiveRequest();
-        break;
-      case 5:
-        this.onDeleteRequest();
-        break;
+    const actions = [
+      () => this.exportToExcel(),
+      () => this.addNewEntrega(),
+      () => this.editNewEntrega(),
+      () => this.onHistoryRequest(),
+      () => this.onArchiveRequest(),
+      () => this.onDeleteRequest(),
+    ];
+
+    const action = actions[index];
+    if (action) {
+      action();
     }
   }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
