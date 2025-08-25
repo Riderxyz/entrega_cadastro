@@ -63,35 +63,33 @@ export class AgCellArchiveButtonComponent implements ICellRendererAngularComp {
       target: event.target as EventTarget,
       message: 'Tem certeza que deseja arquivar esta entrega ?',
       icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
       accept: () => {
         this.showArchiveLoading = true;
         if (this.params.data) {
           const entregaObj = this.params.data;
-          entregaObj.status = EntregaStatus.Arquivada;
-          entregaObj!.updatedAt = new Date();
-          entregaObj!.arquivado = true;
-          entregaObj!.updatedBy = this.authSrv.currentUser!.id
-            ? this.authSrv.currentUser!.id
-            : '';
-          this.entregaSrv.updateEntrega(entregaObj!).then((res) => {});
-          this.entregaSrv
-            .addHistoricoEntrega(entregaObj.id, {
-              status: EntregaStatus.Arquivada,
-              date: new Date(),
-              id: uuidv4(),
-              observacoes: '',
-            })
-            .then((res) => {
-              this.toastSrv.notify(
-                'info',
-                'Arquivada',
-                'Entrega foi arquivada',
-                3000
-              );
-             /*  if (this.params && this.params.moveStatusForward) {
-                // this.params.moveStatusForward(this.params.data);
-              } */
-            });
+          this.entregaSrv.archiveEntrega(entregaObj).then((res) => {
+            this.entregaSrv
+              .addHistoricoEntrega(entregaObj.id, {
+                status: EntregaStatus.Arquivada,
+                date: new Date(),
+                id: uuidv4(),
+                observacoes:
+                  'arquivado por ' + this.authSrv.currentUser?.displayName,
+              })
+              .then((res) => {
+                this.toastSrv.notify(
+                  'info',
+                  'Arquivada',
+                  'Entrega foi arquivada',
+                  3000
+                );
+                /*  if (this.params && this.params.moveStatusForward) {
+                  // this.params.moveStatusForward(this.params.data);
+                } */
+              });
+          });
         }
       },
       reject: () => {

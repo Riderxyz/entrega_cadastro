@@ -84,6 +84,8 @@ export class AgCellStatusForwardButtonComponent
         this.proximoStatus +
         '"?',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
       accept: () => {
         this.showStatusChangeLoading = true;
         const entregaObj = this.params.data;

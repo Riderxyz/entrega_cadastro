@@ -15,20 +15,25 @@ import {
 } from '@angular/fire/firestore';
 import { config } from './config';
 import { UtilService } from './util.service';
-import { EntregaInterface } from '../interfaces/entrega.interface';
+import {
+  EntregaInterface,
+  EntregaStatus,
+} from '../interfaces/entrega.interface';
 import { HistoricoEntregaInterface } from '../interfaces/historico.interface';
+import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class EntregaService {
   private readonly firestoreCtrl = inject(Firestore);
   private readonly utilSrv = inject(UtilService);
-
-  private readonly entregaConverter = this.utilSrv.genericConverter<EntregaInterface>([
-    'dataEstimadaEntrega',
-    'createdAt',
-    'updatedAt',
-    'dataEnvio',
-  ]);
+  private readonly authSrv = inject(AuthService);
+  private readonly entregaConverter =
+    this.utilSrv.genericConverter<EntregaInterface>([
+      'dataEstimadaEntrega',
+      'createdAt',
+      'updatedAt',
+      'dataEnvio',
+    ]);
 
   private readonly historicoConverter =
     this.utilSrv.genericConverter<HistoricoEntregaInterface>(['date']);
@@ -69,7 +74,7 @@ export class EntregaService {
     return collectionData(collectionRef, { idField: 'id' });
   }
 
-    getUltimas5Entregas() {
+  getUltimas5Entregas() {
     const collectionRef = collection(
       this.firestoreCtrl,
       config.firebaseCollectionKeys.entregas
@@ -96,10 +101,15 @@ export class EntregaService {
     return setDoc(this.entregaDocRef(entrega.id), entrega, { merge: true });
   }
 
+  archiveEntrega(entregaObj: EntregaInterface) {
+    entregaObj.status = EntregaStatus.Arquivada;
+    entregaObj.updatedAt = new Date();
+    entregaObj.arquivado = true;
+    entregaObj.updatedBy = this.authSrv.currentUser!.id
+      ? this.authSrv.currentUser!.id
+      : '';
 
-
-  archiveEntrega(id: string) {
-    return updateDoc(this.entregaDocRef(id), { arquivado: true });
+    return updateDoc(this.entregaDocRef(entregaObj.id), { entregaObj });
   }
 
   deleteEntrega(id: string) {
@@ -120,10 +130,7 @@ export class EntregaService {
     return getDoc(this.historicoDocRef(idEntrega, idHistorico));
   }
 
-  addHistoricoEntrega(
-    idEntrega: string,
-    historico: HistoricoEntregaInterface
-  ) {
+  addHistoricoEntrega(idEntrega: string, historico: HistoricoEntregaInterface) {
     return setDoc(this.historicoDocRef(idEntrega, historico.id), historico);
   }
 

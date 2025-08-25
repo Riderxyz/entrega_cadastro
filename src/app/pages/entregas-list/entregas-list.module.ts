@@ -8,15 +8,19 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { AgGridModule } from 'ag-grid-angular';
-import { FormsModule } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 
 const primeNgModules = [
   ButtonModule,
   InputTextModule,
   ScrollPanelModule,
   TooltipModule,
+  DynamicDialogModule,
+  ConfirmDialogModule,
   PanelModule,
 ];
 
@@ -28,7 +32,7 @@ const primeNgModules = [
     ...primeNgModules,
     EntregasListRoutingModule,
     AgGridModule,
-    FormsModule
-],
+    FormsModule,
+  ],
 })
 export class EntregasListModule {}

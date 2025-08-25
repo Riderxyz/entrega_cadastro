@@ -9,30 +9,38 @@ import {
   ColDef,
   ColGroupDef,
 } from 'ag-grid-community';
+import { ConfirmationService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Subject, takeUntil } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { AgCellArchiveButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-archive-button/ag-cell-archive-button.component';
+import { AgCellDeleteButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-delete-button/ag-cell-delete-button.component';
 import { AgCellHistoryButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-history-button/ag-cell-history-button.component';
 import { AgCellStatusForwardButtonComponent } from 'src/app/components/ag-grid-buttons/ag-cell-statusforward-button/ag-cell-statusforward-button.component';
 import { EntregaFormComponent } from 'src/app/components/modals/entrega-form/entrega-form.component';
 import { HistoricoEntregaComponent } from 'src/app/components/modals/historico-entrega/historico-entrega.component';
-import { EntregaInterface } from 'src/app/interfaces/entrega.interface';
+import {
+  EntregaInterface,
+  EntregaStatus,
+} from 'src/app/interfaces/entrega.interface';
+import { AuthService } from 'src/app/service/auth.service';
 import { EntregaService } from 'src/app/service/entregas.service';
 import { ExportService } from 'src/app/service/export.service';
 import { ThemeService } from 'src/app/service/theme.service';
-
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-entregas-list',
   templateUrl: './entregas-list.component.html',
   styleUrls: ['./entregas-list.component.scss'],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
 })
 export class EntregasListComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly entregaSrv = inject(EntregaService);
   private readonly dialogSrv = inject(DialogService);
   private readonly themeSrv = inject(ThemeService);
-  private readonly router = inject(Router);
+  private readonly authSrv = inject(AuthService);
+  private readonly confirmationDialogSrv: ConfirmationService =
+    inject(ConfirmationService);
   private readonly exportSrv: ExportService = inject(ExportService); // ExportService
 
   gridApi!: GridApi<EntregaInterface>;
@@ -108,6 +116,14 @@ export class EntregasListComponent implements OnInit, OnDestroy {
             onHistory: (rowData: EntregaInterface) => {},
           },
         },
+        {
+          headerName: 'Excluir',
+          cellRenderer: AgCellDeleteButtonComponent,
+          width: 70,
+          cellRendererParams: {
+            onHistory: (rowData: EntregaInterface) => {},
+          },
+        },
       ],
     },
   ];
@@ -155,6 +171,15 @@ export class EntregasListComponent implements OnInit, OnDestroy {
   /** Botões da toolbar (reagem à seleção) */
   get crudGridBtnArr() {
     return [
+      {
+        icon: 'fa-solid fa-file-excel',
+        pTooltip:
+          this.selectedRows.length > 0
+            ? 'Exportar dados selecionados para Excel'
+            : 'Exportar dados para Excel',
+        severity: 'primary',
+        disabled: false,
+      },
       {
         icon: 'fa-solid fa-plus',
         pTooltip: 'Incluir nova entrega',
@@ -204,7 +229,19 @@ export class EntregasListComponent implements OnInit, OnDestroy {
     this.gridApi = params.api;
     this.entregaSrv
       .getAllEntregas()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.destroy$),
+        map((res) => {
+          const retorno: EntregaInterface[] = [];
+          res.forEach((entrega) => {
+            if (!entrega.arquivado) {
+              console.log('n sou arquivado', entrega);
+              retorno.push(entrega);
+            }
+          });
+          return retorno;
+        })
+      )
       .subscribe({
         next: (res) => {
           this.gridApi.updateGridOptions({ rowData: res });
@@ -216,20 +253,20 @@ export class EntregasListComponent implements OnInit, OnDestroy {
 
   addNewEntrega() {
     console.log('Adicionar nova entrega');
-    /* this.dialogSrv.open(EntregaFormComponent, {
+    this.dialogSrv.open(EntregaFormComponent, {
       header: 'Nova Entrega',
       width: '70%',
       data: {},
-    }); */
+    });
   }
 
   editNewEntrega() {
     console.log('Editar entrega:', this.selectedRows[0]);
-    /* this.dialogSrv.open(EntregaFormComponent, {
+    this.dialogSrv.open(EntregaFormComponent, {
       header: 'Editar Entrega',
       width: '70%',
       data: { entrega: this.selectedRows[0] },
-    }); */
+    });
   }
 
   onHistoryRequest() {
@@ -247,7 +284,33 @@ export class EntregasListComponent implements OnInit, OnDestroy {
     });
   }
   onArchiveRequest() {
-    console.log('Arquivar entrega:', this.selectedRows[0]);
+    this.confirmationDialogSrv.confirm({
+      message:
+        this.selectedRows.length === 1
+          ? 'Tem certeza que deseja arquivar esta entrega ?'
+          : 'Tem certeza que deseja arquivar estas entregas ?',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'Sim',
+      rejectLabel: 'Não',
+      accept: () => {
+        console.log('foi');
+        this.selectedRows.forEach((entrega) => {
+          this.entregaSrv.archiveEntrega(entrega).then((res) => {
+            this.entregaSrv.addHistoricoEntrega(entrega.id, {
+              status: EntregaStatus.Arquivada,
+              date: new Date(),
+              id: uuidv4(),
+              observacoes:
+                'arquivado por ' + this.authSrv.currentUser?.displayName,
+            });
+          });
+        });
+      },
+      reject: () => {
+        console.log('não foi');
+      },
+    });
+
     /* this.dialogSrv.open(EntregaFormComponent, {
       header: 'Arquivar Entrega',
       width: '70%',
@@ -274,18 +337,26 @@ export class EntregasListComponent implements OnInit, OnDestroy {
 
     switch (index) {
       case 0:
-        this.addNewEntrega();
+        const exportarTudo = this.selectedRows.length !== 0;
+        this.exportSrv.exportGridToExcel(
+          this.gridApi,
+          exportarTudo,
+          'Lista de Entregas'
+        );
         break;
       case 1:
-        this.editNewEntrega();
+        this.addNewEntrega();
         break;
       case 2:
-        this.onHistoryRequest();
+        this.editNewEntrega();
         break;
       case 3:
-        this.onArchiveRequest();
+        this.onHistoryRequest();
         break;
       case 4:
+        this.onArchiveRequest();
+        break;
+      case 5:
         this.onDeleteRequest();
         break;
     }
