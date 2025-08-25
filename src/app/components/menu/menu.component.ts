@@ -17,6 +17,10 @@ private readonly authSrv: AuthService = inject(AuthService)
   sair() {
     console.log('2323qqqq');
 
-this.authSrv.logout().subscribe()
+this.authSrv.logout().subscribe({
+  next: () => {
+    window.location.reload();
+  }
+})
   }
 }

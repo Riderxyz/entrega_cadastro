@@ -15,6 +15,7 @@ import { ConfirmationService } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from 'src/app/service/auth.service';
+import { ToastService } from 'src/app/service/toast.service';
 @Component({
   selector: 'app-ag-cell-statusforward-button',
   standalone: true,
@@ -56,6 +57,7 @@ export class AgCellStatusForwardButtonComponent
   private readonly confirmationDialogSrv: ConfirmationService =
     inject(ConfirmationService);
     private readonly authSrv: AuthService =   inject(AuthService);
+    private readonly toastSrv: ToastService = inject(ToastService)
   showStatusChangeLoading = false;
   agInit(params: ICellRendererParams<EntregaInterface>): void {
     this.params = params;
@@ -106,6 +108,7 @@ entregaObj.updatedBy = this.params.data.createdBy
           id: uuidv4(),
           observacoes: '',
         }).then((res) => {
+          this.toastSrv.notify('info', 'Status modificado', 'Status da entrega foi movido para "'+ this.proximoStatus + '"', 3000);
           if (this.params && this.params.moveStatusForward) {
             // this.params.moveStatusForward(this.params.data);
           }
